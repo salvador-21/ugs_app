@@ -1,0 +1,195 @@
+<!doctype html>
+{% load static %}
+
+<html lang="en">
+   
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Title -->
+    <title>UGS- {{page}}</title>
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'ugs_app/img/logo2.png' %}">
+    <!-- Plugins File -->
+    <link rel="stylesheet" href="{% static 'ugs_app/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ugs_app/css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'ugs_app/css/dataTables.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ugs_app/css/buttons.bootstrap5.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ugs_app/css/select.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ugs_app/css/sweetalert2.min.css' %}">
+
+    <!-- Master Stylesheet [If you remove this CSS file, your file will be broken undoubtedly.] -->
+    <link rel="stylesheet" href="{% static 'ugs_app/style.css' %}">
+    <link rel="stylesheet" href="{% static 'ugs_app/build/toastr.css' %}">
+</head>
+<style>
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    
+        </style>
+<!-- <body oncontextmenu="return false"> -->
+    <body >
+
+    <div  id="preloader">
+        <div class="chicken-loader" >
+            <span class="eye"></span>
+          </div>
+    </div>
+    <!-- /Preloader -->
+
+    
+    <!-- ======================================
+    ******* Page Wrapper Area Start **********
+    ======================================= -->
+    <div class="flapt-page-wrapper">
+        <!-- Sidemenu Area -->
+        <div class="flapt-sidemenu-wrapper">
+            <!-- Desktop Logo -->
+            <div class="flapt-logo">
+                <a href="{% url 'homepage' %}">
+                    
+                    <img class="desktop-logo bounce" src="{% static 'ugs_app/img/logo.png' %}" alt="Desktop Logo"> 
+                    <img class="small-logo" src="{% static 'ugs_app/img/logo2.png' %}" alt="Mobile Logo"></a>
+            </div>
+
+            <!-- Side Nav -->
+            <div class="flapt-sidenav" id="flaptSideNav">
+                <!-- Side Menu Area -->
+                <div class="side-menu-area">
+                    <!-- Sidebar Menu -->
+                    {% include './include/sidebar.html' %}
+                </div>
+
+                <!-- Upgrade Card -->
+                <div class="upgrade-card card">
+                    <div class="card-body">
+                        
+                        <img class="mb-4" src="{% static 'ugs_app/img/bg-img/1.png' %}" alt="">
+                        <!-- <h4>1000000</h4> -->
+                        <a class="btn btn-sm btn-warning fs-4" href="#">CLOCK STAKING</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page Content -->
+        <div class="flapt-page-content">
+            <!-- Top Header Area -->
+            {% include './include/header.html' %}
+
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <div class="content-wraper-area">
+                    {% block body %}
+
+                    {% endblock%}
+                </div>
+
+                <!-- Footer Area -->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Footer Area -->
+                            <footer
+                                class="footer-area d-sm-flex justify-content-center align-items-center justify-content-between">
+                                <!-- Copywrite Text -->
+                              
+                                <div class="fotter-icon text-center">
+                                    <p class="mb-0 font-13">2024 &copy; <a href="">Ultimate Gaffed Sports</a></p>
+                                </div>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'ugs_app/include/modals.html' %}
+    {% if user.useraccount.usertype == 'ADMIN' %}
+    {% include 'ugs_app/include/admin_modals.html' %}
+    {% endif%}
+    <!-- ======================================
+    ********* Page Wrapper Area End ***********
+    ======================================= -->
+    <script>let invalidChars = ["-","+","e","E"];</script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Must needed plugins to the run this Template -->
+    <script src="{% static 'ugs_app/js/jquery.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/default-assets/setting.js' %}"></script>
+    <script src="{% static 'ugs_app/js/default-assets/scrool-bar.js' %}"></script>
+    <script src="{% static 'ugs_app/js/todo-list.js' %}"></script>
+    <script src="{% static 'ugs_app/js/moment.js' %}"></script>
+    <!-- <script src="{% static 'ugs_app/js/jquery.nice-select.min.js' %}"></script> -->
+    <!-- These plugins only need for the run this page -->
+    <script src="{% static 'ugs_app/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/dataTables.bootstrap5.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/pdfmake.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/vfs_fonts.js' %}"></script>
+    <script src="{% static 'ugs_app/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/jszip.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/dataTables-custom.js' %}"></script>
+   
+    <script src="{% static 'ugs_app/js/sweetalert2.all.min.js' %}"></script>
+    <!-- <script src="{% static 'ugs_app/js/sweetalert-custom.js' %}"></script> -->
+    <!-- Active JS -->
+    <script src="{% static 'ugs_app/js/todo-list.js' %}"></script>
+    <script src="{% static 'ugs_app/js/default-assets/active.js' %}"></script>
+    <script src="{% static 'ugs_app/build/toastr.js' %}"></script>
+
+    <!-- These plugins only need for the run this page -->
+    {% if page == 'HOMEPAGE'%}
+    <!-- <script src="{% static 'ugs_app/js/apexcharts.min.js' %}"></script> -->
+    <!-- <script src="{% static 'ugs_app/js/dashboard-custom-sass.js' %}"></script> -->
+    <script src="{% static 'ugs_app/js/clipboard.min.js' %}"></script>
+    <script src="{% static 'ugs_app/js/clipboard-active.js' %}"></script>
+    {% endif %}
+
+    {% if page == 'ARENA'%}
+    <script src="{% static 'ugs_app/main/arena.js' %}"></script>
+    {% endif %}
+
+    {% if page == 'SETTING'%}
+    <script src="{% static 'ugs_app/main/setting.js' %}"></script>
+    {% endif %}
+    
+    {% if user.useraccount.usertype == 'SUPER ADMIN' %}
+    <script src="{% static 'ugs_app/main/admin.js' %}"></script>
+    {% endif %}
+    {% if user.useraccount.usertype == 'ADMIN' %}
+    <script src="{% static 'ugs_app/main/agentadmin.js' %}"></script>
+    {% endif %}
+    {% if user.useraccount.usertype == 'DECLARATOR' %}
+    <script src="{% static 'ugs_app/main/decla.js' %}"></script>
+    {% endif %}
+    {% if user.useraccount.usertype != 'SUPER ADMIN' %}
+    <script src="{% static 'ugs_app/main/default.js' %}"></script>
+    {% endif %}
+    {% if user.useraccount.usertype == 'AGENT' %}
+    <script src="{% static 'ugs_app/main/agent.js' %}"></script>
+    {% endif %}
+
+
+    
+
+    <!-- <script>
+        $('body').attr('oncontextmenu','return false')
+       
+        document.onkeydown = function(e) {
+            if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 85 || e.keyCode === 117)) {
+                //Alt+c, Alt+v will also be disabled sadly.
+                // alert('not allowed');
+            }
+            return false;
+    };
+    </script> -->
+  
+</body>
+
+</html>
