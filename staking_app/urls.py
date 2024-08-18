@@ -10,6 +10,7 @@ from staking_app import views
 
 urlpatterns = [
     # admin
-    path('', views.index,name='index'),
+    path('', views.home_stake,name='home_stake'),
+    path('save_stake',views.save_stake,name='save_stake'),
     # ------mmmmmmmmm-------------- 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -30,7 +30,34 @@ from decimal import Decimal
 from django.urls import reverse
 from datetime import datetime
 
+from ugs_app.views import *
 
-def index(request):
+from staking_app.views import *
+from staking_app.forms import *
 
-    return render(request,'staking/index.html')
+def home_stake(request):
+    games=Games.objects.filter(g_status='OPEN')
+    context={
+          'page':'STAKING',
+           'stakeform':StakeForm(),
+        #    'ref_url':request.META['HTTP_HOST']+'/registration/',
+           'wallet':request.user.userwallet.w_balance
+     }
+    return render(request,'staking/index.html',context)
+
+def save_stake(request):
+    stake=StakeForm(request.POST)
+
+    if stake.is_valid():
+        slot = stake.save(commit = False)
+        slot.user=request.user
+        slot.s_name=request.POST.get('s_name')
+        slot.s_rate=request.POST.get('s_rate')
+        slot.s_amount=request.POST.get('s_amount')
+        slot.save()
+
+        data='form Valid'
+    else:
+
+        data='Invalid Form'
+    return JsonResponse({'data':data})

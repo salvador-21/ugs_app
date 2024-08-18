@@ -69,7 +69,7 @@
                         
                         <img class="mb-4" src="{% static 'ugs_app/img/bg-img/1.png' %}" alt="">
                         <!-- <h4>1000000</h4> -->
-                        <a class="btn btn-sm btn-warning fs-4" href="#">CLOCK STAKING</a>
+                        <a class="btn btn-sm btn-warning fs-4 " href="{% url 'home_stake' %}">CLOCK STAKING</a>
                     </div>
                 </div>
             </div>
@@ -111,6 +111,10 @@
     {% if user.useraccount.usertype == 'ADMIN' %}
     {% include 'ugs_app/include/admin_modals.html' %}
     {% endif%}
+
+    {% if page == 'STAKING' %}
+    {% include 'staking/modal/index.html' %}
+    {% endif %}
     <!-- ======================================
     ********* Page Wrapper Area End ***********
     ======================================= -->
@@ -175,20 +179,31 @@
     <script src="{% static 'ugs_app/main/agent.js' %}"></script>
     {% endif %}
 
+    <!-- Staking Js -->
+
+    {% if page == 'STAKING'%}
+    <script src="{% static 'ugs_app/staking/index.js' %}"></script>
+    
+    {% endif %}
 
     
 
-    <!-- <script>
-        $('body').attr('oncontextmenu','return false')
+    <script>
+         $(document).on('click','.staking_url',function(){
+            window.location.href='staking/'
+           
+        })
+    //     $('body').attr('oncontextmenu','return false')
        
-        document.onkeydown = function(e) {
-            if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 85 || e.keyCode === 117)) {
-                //Alt+c, Alt+v will also be disabled sadly.
-                // alert('not allowed');
-            }
-            return false;
-    };
-    </script> -->
+    //     document.onkeydown = function(e) {
+    //         if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 85 || e.keyCode === 117)) {
+    //             //Alt+c, Alt+v will also be disabled sadly.
+    //             // alert('not allowed');
+    //         }
+    //         return false;
+       
+    // };
+    </script>
   
 </body>
 

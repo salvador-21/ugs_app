@@ -137,7 +137,7 @@ def getusers(request):
      data=[]
      for a in acc:
           a.date_joined=a.date_joined.strftime("%Y-%m-%d %I:%M %p")
-          print(a.id)
+        
           try:
                gwallet=UserWallet.objects.get(user=a)
                wallet=gwallet.w_balance
@@ -503,7 +503,7 @@ def load_games(request):
 @csrf_exempt
 def getgame(request):
      gid=request.POST.get('gid')
-     print(gid)
+   
      upgames=Games.objects.get(g_id=gid)
      # data=upgames
      # ldata=serialize('json',upgames)
@@ -536,7 +536,7 @@ def add_games(request):
                data='ok'
           else:
                data='bad'
-               print('bad')
+        
      return JsonResponse({'data':str(data)})
 
 # declarator
@@ -663,7 +663,7 @@ def lastcall(request):
 @csrf_exempt
 def closebet(request):
      gfid=request.POST.get('cfight')
-     print(gfid)
+ 
      cfight=Fight.objects.get(f_id=gfid)
      cfight.f_status='CLOSE'
      cfight.save()
@@ -673,7 +673,7 @@ def closebet(request):
 @csrf_exempt
 def openbet(request):
      ofid=request.POST.get('ofight')
-     print(ofid)
+
      cfight=Fight.objects.get(f_id=ofid)
      cfight.f_status='DONE'
      cfight.save()
@@ -853,7 +853,7 @@ def mydownlines(request):
 @login_required(login_url='/')
 def admin_points(request):
     usertype = request.session.get('usertype')
-    print(usertype)
+   
     if usertype == 'SUPER ADMIN':
          user_id = request.user.id
          adminPointsList = Points.objects.select_related('p_sender').filter(p_sender=user_id)
@@ -1312,7 +1312,7 @@ def disburse(request):
 
 
 
-def distribute_commission_upward(user_id, bet_amount):
+def distribute_commission_upward(user_id, bet_amount): 
     commi_distrib = []
     visited = set()
     distribute_upward(user_id, bet_amount, commi_distrib, visited)
@@ -1491,17 +1491,17 @@ def fight_stat(request):
                      winning_bet = walapayout*8
                      
                   
-                print(f"Bet ID: {bet.id}, Bettor ID: {bet.player.id}, Bettor: {bet.player.username}, Player bet amount: {mymeronbet}, Bet: {bet.category}, Payout : {winning_bet}")
+               #  print(f"Bet ID: {bet.id}, Bettor ID: {bet.player.id}, Bettor: {bet.player.username}, Player bet amount: {mymeronbet}, Bet: {bet.category}, Payout : {winning_bet}")
                #  SAVE WINNING BET AMOUNT
                 Bet.objects.filter(id=bet.id, winStat=0).update(winning_amnt = winning_bet)
                #  SAVE WINNING BET AMOUNT
         data = 1     
     except Fight.DoesNotExist:
         data = 0
-        print(f"Fight with ID {fid} does not exist.")
+     #    print(f"Fight with ID {fid} does not exist.")
 
     except Exception as e:
-        print(f"Error: {e}")
+     #    print(f"Error: {e}")
         data = 0
 
     return JsonResponse({'data': data})
@@ -1514,7 +1514,7 @@ def updatewallet(request):
      ttrans=request.POST.get('ttype')
      fid=request.POST.get('fid')
      betin=request.POST.get('betin')
-     print(betin)
+    
      try:
           gwallet=UserWallet.objects.get(user=request.user)
           curbalance=gwallet.w_balance
@@ -1528,10 +1528,8 @@ def updatewallet(request):
                         bet=Longestfight.objects.create(l_fight=fight,l_amount=amount,l_category=betin,l_player=request.user,l_fightno=fight.f_number)
                     else:
                         bet=Bet.objects.create(fight=fight,amount=amount,category=betin,player=request.user,fightno=fight.f_number) 
-                    print('ok')
-               except Exception as e:
                     
-                    print('No Bet Yet')
+               except Exception as e:
                     print(e)
           except Exception as e:
                print(e)
@@ -1732,18 +1730,18 @@ def setlongwin(request):
                             clwallet.w_betlong += longDivide
                             clwallet.save()
                             data = 'ok'
-                            print('success')
+                   
                         except UserWallet.DoesNotExist:
                             data = 'bad'
-                            print('wallet not found')
+                          
                     else:
                         data = 'bad'
-                        print('longDivide <= 0')
+                    #     print('longDivide <= 0')
         else:
             data = 'bad'
-            print('Invalid longDivide calculation')
+          #   print('Invalid longDivide calculation')
     except Exception as e:
-        print(f"An error occurred: {e}")
+     #    print(f"An error occurred: {e}")
         data = 'bad'
 
     return JsonResponse({'data': data})

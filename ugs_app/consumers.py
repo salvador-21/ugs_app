@@ -143,7 +143,7 @@ def main(user,game_room):
           mydrawbet=0
         
         try:
-          mylongbet=Longestfight.objects.filter(l_status='WAITING',l_category='LONGEST',l_player=user).aggregate(total=Sum('l_amount'))['total'] 
+          mylongbet=Longestfight.objects.filter(l_status='PENDING',l_category='LONGEST',l_player=user).aggregate(total=Sum('l_amount'))['total'] 
           if mylongbet is None:
                 mylongbet=0
         except Exception as e:
