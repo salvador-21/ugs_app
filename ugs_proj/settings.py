@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
+import sys
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 USE_TZ = True
@@ -25,12 +26,13 @@ SECRET_KEY = 'django-insecure-ard^dr15f8bucl+ml=s)g@4g^ck&8s5!5ys+l&9$cwf^1n(7d2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 CORS_ALLOWED_ORIGINS =[
     'http://localhost:8000',
     'http://127.0.0.1:8000',
 
 ]
+
 
 CORS_ALLOW_CREDENTIALS =True
 AUTH_USER_MODEL = 'ugs_app.UserProfile'
@@ -155,7 +157,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+# STATICFILES_DIRS = ( os.path.join(BASE_DIR,'ugs_app/static/'),)
+# STATIC_ROOT= os.path.join(BASE_DIR,'static/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'ugs_app/static/ugs_app/uploads')
+MEDIA_URL = '/uploads/'
 
+
+
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'uploads'),
+#     )
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
