@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render,redirect
 from django.http import JsonResponse,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
@@ -63,6 +64,7 @@ def index(request):
 @login_required(login_url='/')
 def homepage(request):
      games=Games.objects.filter(g_status='OPEN')
+     
      context={
           'page':'HOMEPAGE',
            'games':list(games),
