@@ -11,28 +11,29 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from django.core.management.utils import get_random_secret_key
 import os
 import sys
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 USE_TZ = True
-TIME_ZONE = 'UTC'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ard^dr15f8bucl+ml=s)g@4g^ck&8s5!5ys+l&9$cwf^1n(7d2'
+#SECRET_KEY = 'django-insecure-ard^dr15f8bucl+ml=s)g@4g^ck&8s5!5ys+l&9$cwf^1n(7d2'
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
+#DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
+# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 CORS_ALLOWED_ORIGINS =[
     'http://localhost:8000',
     'http://127.0.0.1:8000',
-
 ]
-
 
 CORS_ALLOW_CREDENTIALS =True
 AUTH_USER_MODEL = 'ugs_app.UserProfile'
@@ -102,23 +103,43 @@ ASGI_APPLICATION = 'ugs_proj.asgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ugs_db_081324',
-        'USER': 'root',
-        'PASSWORD':'Kinsee_06',
-        'HOST':'localhost',
-        'PORT':'3306',
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ugs_db_081324',
+#         'USER': 'root',
+#         'PASSWORD':'Kinsee_06',
+#         'HOST':'localhost',
+#         'PORT':'3306',
+#     }
+# }
+DEVELOPMENT_MODE = os.getenv("DEVELOPMENT_MODE", "False") == "True"
+if DEVELOPMENT_MODE is True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
+elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
+    if os.getenv("DATABASE_URL", None) is None:
+        raise Exception("DATABASE_URL environment variable not defined")
+    DATABASES = {
+        "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
+    }
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG':{
+#             'hosts': [('127.0.0.1', 6379)],
+#         }
+#     }
+# }
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG':{
-            'hosts': [('127.0.0.1', 6379)],
-        }
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
 
@@ -146,7 +167,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Manila'
 
 USE_I18N = True
 
@@ -158,7 +179,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 # STATICFILES_DIRS = ( os.path.join(BASE_DIR,'ugs_app/static/'),)
-# STATIC_ROOT= os.path.join(BASE_DIR,'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'ugs_app/static/ugs_app/uploads')
 MEDIA_URL = '/uploads/'
 
