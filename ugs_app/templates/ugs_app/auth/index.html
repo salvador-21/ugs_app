@@ -97,18 +97,6 @@
     <script src="{% static 'ugs_app/main/auth.obfuscated.js' %}"></script>
 
     <script src="{% static 'ugs_app/js/django_template_obfuscator.js' %}"></script>
-
-    <script>
-       $("form").each(function() {
-     $(this).find(':input[type="submit"]').prop('disabled', true);
- });
- function correctCaptcha() {
-     $("form").each(function() {
-         $(this).find(':input[type="submit"]').prop('disabled', false);
-     });
- }
-   
-    </script>
 </body>
 
 
