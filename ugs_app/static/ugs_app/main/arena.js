@@ -5,7 +5,7 @@ $(document).ready(function(){
     const bet_s=JSON.parse(document.getElementById('betstatus').textContent)
     
     
-    var socket= new WebSocket('ws://'+window.location.host+'/ws/arena/'+games);
+    var socket= new WebSocket('wss://'+window.location.host+'/ws/arena/'+games);
     // /////////////////////////
     
     $(document).on('click','.bet',function(){
