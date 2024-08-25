@@ -130,7 +130,7 @@ elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'BACKEND': 'channels.layers.RedisChannelLayer',
         'CONFIG':{
             "hosts": [
                 os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0')
