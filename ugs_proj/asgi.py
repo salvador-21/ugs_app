@@ -12,7 +12,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ugs_proj.settings')
 
 # application = get_asgi_application()
 application=ProtocolTypeRouter({
-    'http':get_asgi_application(),
+    'https':get_asgi_application(),
     'websocket':AllowedHostsOriginValidator(
         AuthMiddlewareStack(URLRouter(ws_urlpatterns))
     )
