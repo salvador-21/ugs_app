@@ -27,6 +27,9 @@ $(document).ready(function(){
     // /////////////////////////
     
     
+
+
+    
     socket.onmessage =function(e){    
         $('.notif').html('')
         
