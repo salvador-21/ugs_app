@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'ugs_app.apps.UgsAppConfig',
     'rest_framework',
     'corsheaders',
-    'channels',
+    'daphne',
     'django.contrib.humanize',
     'django_minify_html',
     'django_template_obfuscator.apps.DjangoTemplateObfuscatorConfig',
