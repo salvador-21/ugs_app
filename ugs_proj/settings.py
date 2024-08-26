@@ -42,7 +42,6 @@ AUTH_USER_MODEL = 'ugs_app.UserProfile'
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
     'staking_app.apps.StakingAppConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,6 +52,7 @@ INSTALLED_APPS = [
     'ugs_app.apps.UgsAppConfig',
     'rest_framework',
     'corsheaders',
+    'daphne',
     'django.contrib.humanize',
     'django_minify_html',
     'django_template_obfuscator.apps.DjangoTemplateObfuscatorConfig',
