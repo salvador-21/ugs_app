@@ -30,11 +30,12 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 DEBUG = os.getenv("DEBUG", "False") == "True"
 # ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
-CORS_ALLOWED_ORIGINS =[
-    # 'http://localhost:8000',
-    # 'http://127.0.0.1:8000',
-    'https://ultimate-gs.net/',
-]
+# CORS_ALLOWED_ORIGINS =[
+#     # 'http://localhost:8000',
+#     # 'http://127.0.0.1:8000',
+#     'https://ultimate-gs.net/',
+# ]
+CORS_ORIGIN_ALLOW_ALL = True  
 
 CORS_ALLOW_CREDENTIALS =True
 AUTH_USER_MODEL = 'ugs_app.UserProfile'
@@ -42,6 +43,7 @@ AUTH_USER_MODEL = 'ugs_app.UserProfile'
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'staking_app.apps.StakingAppConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,7 +54,6 @@ INSTALLED_APPS = [
     'ugs_app.apps.UgsAppConfig',
     'rest_framework',
     'corsheaders',
-    'daphne',
     'django.contrib.humanize',
     'django_minify_html',
     'django_template_obfuscator.apps.DjangoTemplateObfuscatorConfig',
