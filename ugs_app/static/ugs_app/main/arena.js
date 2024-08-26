@@ -4,7 +4,7 @@ $(document).ready(function(){
     const fight_n=JSON.parse(document.getElementById('fight_n').textContent)
     const bet_s=JSON.parse(document.getElementById('betstatus').textContent)
     
-    
+    //////sample update....
     var socket= new WebSocket('ws://'+window.location.host+'/ws/arena/'+games);
     // /////////////////////////
     
@@ -29,7 +29,7 @@ $(document).ready(function(){
     
 
 
-    
+
     socket.onmessage =function(e){    
         $('.notif').html('')
         
