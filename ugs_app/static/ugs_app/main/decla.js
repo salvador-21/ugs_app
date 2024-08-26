@@ -539,8 +539,10 @@ $(document).ready(function(){
         })
         
         // /////////// WEBSOCKET
+
+        console.log(url.protocol); 
         const ongame=JSON.parse(document.getElementById('arena_game').textContent)
-        var socket= new WebSocket('wss://'+window.location.host+'/ws/arena/'+ongame);
+        var socket= new WebSocket('ws://'+window.location.host+'/ws/arena/'+ongame);
         
         
         socket.onmessage =function(e){    
