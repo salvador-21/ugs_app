@@ -31,8 +31,9 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 # ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 CORS_ALLOWED_ORIGINS =[
-    'http://localhost:8000',
-    'http://127.0.0.1:8000',
+    # 'http://localhost:8000',
+    # 'http://127.0.0.1:8000',
+    'https://ultimate-gs.net/',
 ]
 
 CORS_ALLOW_CREDENTIALS =True
@@ -130,7 +131,7 @@ elif len(sys.argv) > 0 and sys.argv[1] != 'collectstatic':
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'asgi_redis.RedisChannelLayer',
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG':{
             "hosts": [
                 os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0')
