@@ -540,7 +540,7 @@ $(document).ready(function(){
         
         // /////////// WEBSOCKET
 
-        console.log(url.protocol); 
+        // console.log(protocol); 
         const ongame=JSON.parse(document.getElementById('arena_game').textContent)
         var socket= new WebSocket('ws://'+window.location.host+'/ws/arena/'+ongame);
         
