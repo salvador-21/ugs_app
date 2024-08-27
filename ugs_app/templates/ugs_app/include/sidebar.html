@@ -6,6 +6,7 @@
         {% if user.useraccount.usertype == 'SUPER ADMIN' %}
         <li class="{% if page == 'USERS' %} active {% endif %}"><a href="users"><i class="ti-user"></i><span> Accounts</span></a></li>
         <li class="{% if page == 'adminloadPoints'%}active{%endif%}"><a href="{% url 'admin_points'%}"><i class="pe-7s-diamond"></i><span>Load Points</span></a></li>
+        <li class="{% if page == 'staking' %} active {% endif %}"><a href="adstaking"><i class="ti-stats-up"></i><span> Load Staking </span></a></li>
         {% endif %}
         
         
@@ -38,9 +39,9 @@
         <li class="{% if page == 'WALLET' %} active {% endif %}"><a href="{% url 'userwallet' %}"><i class='bx bx-wallet'></i><span> Wallet</span></a></li>
 
 
-        
-
-
+        {% if user.useraccount.usertype == 'AGENT' or user.useraccount.usertype == 'PLAYER' %}
+        <li class="{% if page == 'staking' %} active {% endif %}"><a href="appstaking"><i class="ti-stats-up"></i><span> </span></a></li>
+        {% endif %}
 
         <li class="{% if page == 'SETTING' %} active {% endif %}"><a href="{% url 'setting' %}" ><i class="ti-settings"></i><span>Setting</span></a>
         </li>

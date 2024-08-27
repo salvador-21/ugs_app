@@ -40,10 +40,14 @@ class UserWallet(models.Model):
     w_betwins=models.IntegerField(default=0, blank=True)
     w_betlong=models.IntegerField(default=0, blank=True)
     w_commission=models.IntegerField(default=0, blank=True)
+    w_stakebal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    w_stakecom = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    w_stakeuot = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     w_status=models.CharField(max_length=50,default='ACTIVE',choices=[('ACTIVE','ACTIVE'),('INACTIVE','INACTIVE'),('BANNED','BANNED')])
     w_dateupdate=models.DateTimeField(auto_now=True)
-    commission_rate=models.DecimalField(default=0.00,max_digits=5, decimal_places=3)
-    default_rate=models.DecimalField(default=0.00,max_digits=5, decimal_places=3)
+    commission_rate=models.DecimalField(default=0.00,max_digits=5, decimal_places=2)
+    default_rate=models.DecimalField(default=0.00,max_digits=5, decimal_places=2)
+    wallet_out=models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return str(self.user.username +' - '+str(self.w_id))
@@ -148,6 +152,7 @@ class UWalletCashout(models.Model):
     cw_remaining = models.DecimalField(max_digits=10, decimal_places=2)
     cw_update = models.DateTimeField(auto_now=True)
     cw_created = models.DateTimeField(auto_now_add=True)
+    cw_agent = models.CharField(blank=True, max_length=100, null=True)
     
     def __str__(self):
         return f"Player: {self.cw_player}, Cashout: {self.cw_out}, Remaining: {self.cw_remaining}"
@@ -163,6 +168,20 @@ class Longestfight(models.Model):
     l_status=models.CharField(default='WAITING',max_length=50,choices=[('WAITING','WAITING'),('CLAIMED','CLAIMED')])
     l_fightno = models.IntegerField(default=0)
     l_created=models.DateTimeField(auto_now_add=True)
+    
+
+class Stakefund(models.Model):
+    s_id=models.AutoField(primary_key=True)
+    s_code = models.CharField(blank=True, max_length=50, null=True)
+    s_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    s_user = models.ForeignKey(UserProfile, related_name='stakefund_user', on_delete=models.CASCADE)
+    s_sender = models.ForeignKey(UserProfile, related_name='stakefund_sender', on_delete=models.CASCADE)
+    s_date=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Stakefund {self.s_id} - Amount: {self.s_amount}"
+    
+
     
 
 

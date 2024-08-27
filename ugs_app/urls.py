@@ -75,5 +75,10 @@ urlpatterns = [
     
     path('setwinner',views.setwinner,name='setwinner'),
     path('setlongwin',views.setlongwin,name='setlongwin'),
+    path('adstaking',views.adstaking,name='adstaking'),
+    path('loadStaking',views.loadStaking,name='loadStaking'),
+    path('load_stake_tbl', views.load_stake_tbl, name='load_stake_tbl'),
+    path('appstaking', views.appstaking, name='appstaking'),
+    
     # ------mmmmmmmmm-------------- 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
