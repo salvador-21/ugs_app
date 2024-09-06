@@ -5,11 +5,35 @@
 <div class="dashboard-area">
     <div class="container-fluid">
         <div class="row g-4">
-            <div class="col-12">
+            <div class="col-4">
                 <div class="card">
                     <div class="card-body card-breadcrumb">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
-                            <h4 class="mb-0">STAKING SLOT</h4>
+                            <h4 class="mb-0">STAKING WALLET</h4>
+                            <div class="page-title-right">
+                                <h4 style="font-weight: 700;">{% load humanize %} {{ user.userwallet.w_balance|floatformat:"2"|intcomma }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body card-breadcrumb">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0">STAKING INCOME </h4>
+                            <div class="page-title-right">
+                                <h4 style="font-weight: 700;">{% load humanize %} {{ user.userwallet.w_balance|floatformat:"2"|intcomma }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body card-breadcrumb">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <!-- <h4 class="mb-0">STAKING SLOT</h4> -->
                             <div class="page-title-right">
                               Note: All Stake Slot 7days preparing for start-up and 90 days lock-up
                             </div>
@@ -26,7 +50,7 @@
                         <!-- Single Card -->
                         <div class="single-product-card text-center">
                             <div class="single-product-img">
-                                <img src="{% static 'ugs_app/img/shop-img/1.png' %}" alt="">
+                                <img src="{% static 'ugs_app/img/shop-img/image.png' %}" alt="">
                                 <a class="pro-choice" href="#">
                                     <i class="fa fa-heart-o" aria-hidden="true"></i>
                                 </a>
@@ -34,7 +58,7 @@
                             <div class="single-product-meta ">
                                 <form>
                                     <!-- Product title -->
-                                    <h1 class="mt-0 font-30">ALARM CLOCK</h1>
+                                    <h1 class="mt-0 font-30">SAND CLOCK</h1>
                                     <p class="text-success  fw-bolder" style="font-size: 40px;text-shadow: 1px 1px #f8f4f4;"> 8%</p>
                                     <!-- Product description -->
                                      <div class="div" style="font-size: 30px;font-weight: bolder;">
@@ -61,7 +85,7 @@
                             <div class="single-product-meta ">
                                 <form>
                                     <!-- Product title -->
-                                    <h1 class="mt-0 font-30">WALL CLOCK</h1>
+                                    <h1 class="mt-0 font-30">REGULAR CLOCK</h1>
                                     <p class="text-success  fw-bolder" style="font-size: 40px;text-shadow: 1px 1px #f8f4f4;"> 10%</p>
                                     <!-- Product description -->
                                      <div class="div" style="font-size: 30px;font-weight: bolder;">

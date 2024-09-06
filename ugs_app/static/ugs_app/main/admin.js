@@ -50,6 +50,7 @@ $(document).ready(function(){
         
     // })
     $(document).on('click','.btn-stat',function(){
+        alert('xxx')
         st=$(this).attr('st')
         acc=$(this).attr('acc')
         aid=$(this).attr('aid')

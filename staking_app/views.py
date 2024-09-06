@@ -29,21 +29,24 @@ from django.http import HttpResponse
 from decimal import Decimal
 from django.urls import reverse
 from datetime import datetime
-
 from ugs_app.views import *
-
 from staking_app.views import *
 from staking_app.forms import *
+
+
+
+
 
 def home_stake(request):
     games=Games.objects.filter(g_status='OPEN')
     context={
           'page':'STAKING',
            'stakeform':StakeForm(),
-        #    'ref_url':request.META['HTTP_HOST']+'/registration/',
            'wallet':request.user.userwallet.w_balance
      }
     return render(request,'staking/index.html',context)
+
+
 
 def save_stake(request):
     stake=StakeForm(request.POST)

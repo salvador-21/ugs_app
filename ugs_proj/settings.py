@@ -15,8 +15,10 @@ import os
 import sys
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+TIME_ZONE='Asia/Manila'
 USE_TZ = True
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -105,9 +107,9 @@ ASGI_APPLICATION = 'ugs_proj.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ugs_db_081324',
+        'NAME': 'ugs_db_082324',
         'USER': 'root',
-        'PASSWORD':'Kinsee_06',
+        'PASSWORD':'',
         'HOST':'localhost',
         'PORT':'3306',
     }

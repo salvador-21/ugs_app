@@ -11,8 +11,9 @@
                         <div
                         class="page-title-box d-flex align-items-center justify-content-between">
                         <h4 class="mb-0 text-warning">User Wallet</h4>
+                        {% if user.useraccount.usertype != 'PLAYER' %}
                         <label id="commis">Commission Rate: {{user.userwallet.commission_rate}}</label>
-                        
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -20,11 +21,14 @@
         
         <div class="col-lg-4 col-md-12">
             <a class="card m-0" href="javascript:void(0)">
-                <div class="card-footer text-center">
+                <div class="card-footer">
                     <div class="row clearfix">
                         <div class="col-12">
                             <h3 style="color:aliceblue">User Wallet</h3>
-                            <label>Balance: <h3 id="points">{{user.userwallet.w_balance}}</h3></label>
+                            <h3 class="text-center">Balance: <span id="points">
+                                {% load humanize %}
+                                {{ user.userwallet.w_balance|floatformat:"0"|intcomma}}
+                            </span></h3>
                             <form id="cashOutform">
                                 {% csrf_token %}
                                 <div class="input-group mb-3">
@@ -32,9 +36,12 @@
                                         <span class="input-group-text">Amount</span>
                                     </div>
                                     <input type="number" min="1" step="any" class="form-control" id="cashout" required/>
-                                </div> 
-                                <input type="hidden" value="{{user.userwallet.w_balance}}" id="balance" step="any" required readonly/>
-                                <button class="btn btn-warning btn-block" id="outbtn">CashOut</button>
+                                </div>
+                                <h2>Cash Out To: {{agent.user_agent.username}}</h2><br> 
+                                <div class="row">
+                                    <input type="hidden" value="{{user.userwallet.w_balance}}" id="balance" step="any" required readonly/>
+                                    <button class="btn btn-warning btn-block" id="outbtn">CashOut</button>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -109,16 +116,16 @@
                                     document.getElementById('balance').value=res.newPoints;
                                     document.getElementById('cashout').value='';
                                     $("#import_new_table").load('loadCashOutTbl');
-                                
+                                    
                                 }else if (res.data === 'insufficient') {
                                     toastr["error"]("Insufficient points balance");  
-                                
+                                    
                                 }else if (res.data === 'invalid') {
                                     toastr["error"]("Invalid inputs!");  
-                                
+                                    
                                 }else if (res.data === 'tryagain') {
                                     toastr["error"]("Please try again after a few seconds.");  
-                                
+                                    
                                 } else {
                                     toastr["warning"]("Error: " + JSON.stringify(res.errors));
                                 }

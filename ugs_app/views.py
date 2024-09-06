@@ -8,7 +8,7 @@ from django.contrib.auth.models import User,AbstractUser
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import messages
 from django.utils import timezone
-from .models import UserAccount,UserWallet,Games,Bet,Fight,UserProfile,Commission,Points,UWalletCashout,Longestfight
+from .models import UserAccount,UserWallet,Games,Bet,Fight,UserProfile,Commission,Points,UWalletCashout,Longestfight,Stakefund
 import datetime,time
 import uuid
 from django.contrib.auth.hashers import make_password
@@ -82,15 +82,20 @@ def homepage(request):
      elif request.user.useraccount.usertype == 'AGENT':
           return render(request,'ugs_app/homepage/agent.html',context)
 
+@login_required(login_url='/')
 def games(request):
-     games=Games.objects.filter(g_status='OPEN')
-     context={
-          'page':'GAMES',
-          'games':list(games)
-     }
-     return render(request,'ugs_app/homepage/games.html',context)
+    usertype = request.session.get('usertype')
+    if usertype == 'PLAYER':
+          games=Games.objects.filter(g_status='OPEN')
+          context={
+               'page':'GAMES',
+               'games':list(games)
+          }
+          return render(request,'ugs_app/homepage/games.html',context)
+    else:
+         return redirect(reverse('homepage'))
 
-
+@login_required(login_url='/')
 def setting(request):
      context={
           'page':'SETTING'
@@ -275,118 +280,121 @@ def arena(request,game_id):
 
 @csrf_exempt
 def decla_arena(request,game_id):
-
-     fform=FightForm()
-     fstatus=''
-     fid=''
-     meron=0
-     wala=0
-     fnum=0
-     try:
-          g_arena=Games.objects.get(g_id=game_id)
-          gname=g_arena.g_name
-          gid=g_arena.g_id
-          meron_name=g_arena.g_redname
-          wala_name=g_arena.g_bluename
-          video=g_arena.g_link
-
+     usertype_ss = request.session.get('usertype')
+     if usertype_ss == 'DECLARATOR':    
+          fform=FightForm()
+          fstatus=''
+          fid=''
+          meron=0
+          wala=0
+          fnum=0
           try:
-               g_fight=Fight.objects.filter(f_game=g_arena).latest('f_created')
-               fid=g_fight.f_id
-               status=g_fight.f_status
-               fnum=g_fight.f_number
-               fmulti=g_fight.f_multiplier
-               fwin=g_fight.f_winner
-               flong=g_fight.f_longest
-               # try:
-               #      mymeronbet=Bet.objects.filter(fight=g_fight,status='PENDING',category='MERON',player=request.user).aggregate(total=Sum('amount'))['total']
-               #      if mymeronbet is None:
-               #           mymeronbet=0
-               # except Exception as e:
-               #      mymeronbet=0
-                    
-               # try:
-               #      mywalabet=Bet.objects.filter(fight=g_fight,status='PENDING',category='WALA',player=request.user).aggregate(total=Sum('amount'))['total'] 
-               #      if mywalabet is None:
-               #           mywalabet=0
-               # except Exception as e:
-               #      mywalabet=0
+               g_arena=Games.objects.get(g_id=game_id)
+               gname=g_arena.g_name
+               gid=g_arena.g_id
+               meron_name=g_arena.g_redname
+               wala_name=g_arena.g_bluename
+               video=g_arena.g_link
 
                try:
-                    meron=Bet.objects.filter(fight=fid,category='MERON').aggregate(total=Sum('amount'))['total']
-                    if meron is None:
+                    g_fight=Fight.objects.filter(f_game=g_arena).latest('f_created')
+                    fid=g_fight.f_id
+                    status=g_fight.f_status
+                    fnum=g_fight.f_number
+                    fmulti=g_fight.f_multiplier
+                    fwin=g_fight.f_winner
+                    flong=g_fight.f_longest
+                    # try:
+                    #      mymeronbet=Bet.objects.filter(fight=g_fight,status='PENDING',category='MERON',player=request.user).aggregate(total=Sum('amount'))['total']
+                    #      if mymeronbet is None:
+                    #           mymeronbet=0
+                    # except Exception as e:
+                    #      mymeronbet=0
+                         
+                    # try:
+                    #      mywalabet=Bet.objects.filter(fight=g_fight,status='PENDING',category='WALA',player=request.user).aggregate(total=Sum('amount'))['total'] 
+                    #      if mywalabet is None:
+                    #           mywalabet=0
+                    # except Exception as e:
+                    #      mywalabet=0
+
+                    try:
+                         meron=Bet.objects.filter(fight=fid,category='MERON').aggregate(total=Sum('amount'))['total']
+                         if meron is None:
+                              meron=0
+                    except Exception as e:
                          meron=0
-               except Exception as e:
-                    meron=0
-               try:
-                    wala=Bet.objects.filter(fight=fid,category='WALA').aggregate(total=Sum('amount'))['total'] 
-                    if wala is None:
+                    try:
+                         wala=Bet.objects.filter(fight=fid,category='WALA').aggregate(total=Sum('amount'))['total'] 
+                         if wala is None:
+                              wala=0
+                    except Exception as e:
                          wala=0
-               except Exception as e:
-                    wala=0
-               try:
-                    draw=Bet.objects.filter(fight=fid,category='DRAW').aggregate(total=Sum('amount'))['total'] 
-                    if draw is None:
+                    try:
+                         draw=Bet.objects.filter(fight=fid,category='DRAW').aggregate(total=Sum('amount'))['total'] 
+                         if draw is None:
+                              draw=0
+                    except Exception as e:
                          draw=0
-               except Exception as e:
-                    draw=0
 
-               try:
-                    long=Longestfight.objects.filter(l_status='WAITING',l_category='LONGEST').aggregate(total=Sum('l_amount'))['total']
-                    clong=Longestfight.objects.filter(l_status='WAITING',l_category='LONGEST').aggregate(total=Count('id'))['total'] 
-                    if long is None or clong is None:
+                    try:
+                         long=Longestfight.objects.filter(l_status='WAITING',l_category='LONGEST').aggregate(total=Sum('l_amount'))['total']
+                         clong=Longestfight.objects.filter(l_status='WAITING',l_category='LONGEST').aggregate(total=Count('id'))['total'] 
+                         if long is None or clong is None:
+                              long=0
+                              clong=0
+                    except Exception as e:
                          long=0
                          clong=0
+
                except Exception as e:
+                    status='NONE'
+                    fnum=0
+                    fmulti=0
+                    fwin=0
+                    flong=0
+                    fid=0
+                    draw=0
                     long=0
                     clong=0
 
+
           except Exception as e:
-               status='NONE'
-               fnum=0
-               fmulti=0
-               fwin=0
-               flong=0
-               fid=0
-               draw=0
-               long=0
-               clong=0
-
-
-     except Exception as e:
-          print(e)
+               print(e)
+          
+          dmeron=float(meron)*float(fmulti)
+          dwala=float(wala)*float(fmulti)
+          wallet=UserWallet.objects.get(user=request.user)
+          wbalance=wallet.w_balance
      
-     dmeron=float(meron)*float(fmulti)
-     dwala=float(wala)*float(fmulti)
-     wallet=UserWallet.objects.get(user=request.user)
-     wbalance=wallet.w_balance
- 
-     context={
-          'page':'DECLA ARENA',
-          'game':game_id,
-          'game_name':gname,
-          'meron':meron,
-          'wala':wala,
-          'draw':draw,
-          'long':long,
-          'status':status,
-          'fnum':fnum,
-          'fwin':fwin,
-          'flong':flong,
-          'multiplier':fmulti,
-          'fform':fform,
-          'fight_id':fid,
-          'wallet':wbalance,
-          # 'mybetmeron':mymeronbet,
-          # 'mybetwala':mywalabet,
-          'dmeron':dmeron,
-          'dwala':dwala,
-          'nmeron':meron_name,
-          'nwala':wala_name,
-          'clong':clong,
-          'video':video
-     }
-     return render(request,'ugs_app/homepage/decla_arena.html',context)
+          context={
+               'page':'DECLA ARENA',
+               'game':game_id,
+               'game_name':gname,
+               'meron':meron,
+               'wala':wala,
+               'draw':draw,
+               'long':long,
+               'status':status,
+               'fnum':fnum,
+               'fwin':fwin,
+               'flong':flong,
+               'multiplier':fmulti,
+               'fform':fform,
+               'fight_id':fid,
+               'wallet':wbalance,
+               # 'mybetmeron':mymeronbet,
+               # 'mybetwala':mywalabet,
+               'dmeron':dmeron,
+               'dwala':dwala,
+               'nmeron':meron_name,
+               'nwala':wala_name,
+               'clong':clong,
+               'video':video
+          }
+          return render(request,'ugs_app/homepage/decla_arena.html',context)
+     else:
+         return redirect(reverse('homepage'))
 
 
 
@@ -478,17 +486,21 @@ def addfight(request):
 
 
 
-
+@login_required(login_url='/')
 def decla_games(request):
-     games=Games.objects.all().filter()
-     for g in games:
-          g.g_created = g.g_created.strftime("%Y-%m-%d %I:%M %p")
-     context={
-          'page':'DECLA GAMES',
-          'game_frm':GameForm(),
-          'games':list(games)
-     }
-     return render(request,'ugs_app/homepage/decla_games.html',context)
+     usertype_ss = request.session.get('usertype')
+     if usertype_ss == 'DECLARATOR':
+          games=Games.objects.all().filter()
+          for g in games:
+               g.g_created = g.g_created.strftime("%Y-%m-%d %I:%M %p")
+          context={
+               'page':'DECLA GAMES',
+               'game_frm':GameForm(),
+               'games':list(games)
+          }
+          return render(request,'ugs_app/homepage/decla_games.html',context)
+     else:
+         return redirect(reverse('homepage'))
 
 @csrf_exempt
 def load_games(request):
@@ -824,15 +836,20 @@ def timer(request):
 
 
 # ADMIN
+@login_required(login_url='/')
 def mydownlines(request):
-     myagent=UserProfile.objects.all().select_related('useraccount')
-     context={
-          'page':'DOWNLINES',
-          'signup_frm':SignUpForm(),
-          'user_frm':UserForm(),
-          'users':myagent
-     }
-     return render(request,'ugs_app/homepage/mydownline.html',context)
+     usertype = request.session.get('usertype')
+     if usertype == 'ADMIN':
+          myagent=UserProfile.objects.all().select_related('useraccount')
+          context={
+               'page':'DOWNLINES',
+               'signup_frm':SignUpForm(),
+               'user_frm':UserForm(),
+               'users':myagent
+          }
+          return render(request,'ugs_app/homepage/mydownline.html',context)
+     else:
+         return redirect(reverse('homepage'))
 
 
 
@@ -855,7 +872,6 @@ def mydownlines(request):
 @login_required(login_url='/')
 def admin_points(request):
     usertype = request.session.get('usertype')
-   
     if usertype == 'SUPER ADMIN':
          user_id = request.user.id
          adminPointsList = Points.objects.select_related('p_sender').filter(p_sender=user_id)
@@ -912,17 +928,21 @@ def loadAdminPoints(request):
              return JsonResponse({'data': 'invalid'})
     return JsonResponse({'data': 'invalid method'})
 
-
+@login_required(login_url='/')
 def load_adpoints_table(request):
-    user_id = request.user.id
-    adminPointsList = Points.objects.select_related('p_sender').filter(p_sender=user_id)
-    context = {
-        'page': 'adminloadPoints',
-        'adminPointsList': adminPointsList,
-        'SendPoint': SendPoint(),
-    }
-    html_content = render_to_string('ugs_app/homepage/load_adpoints_table.html', context)
-    return HttpResponse(html_content)
+    usertype = request.session.get('usertype')
+    if usertype == 'SUPER ADMIN':
+          user_id = request.user.id
+          adminPointsList = Points.objects.select_related('p_sender').filter(p_sender=user_id)
+          context = {
+               'page': 'adminloadPoints',
+               'adminPointsList': adminPointsList,
+               'SendPoint': SendPoint(),
+          }
+          html_content = render_to_string('ugs_app/homepage/load_adpoints_table.html', context)
+          return HttpResponse(html_content)
+    else:
+         return redirect(reverse('homepage'))
 
 
 @login_required(login_url='/')
@@ -1004,17 +1024,21 @@ def upplyrstat(request):
 
 @login_required(login_url='/')
 def load_new_user(request):
-     users=[]
-     myusers = UserProfile.objects.select_related('useraccount')
-     for u in myusers:
-          if u.useraccount.user_agent == request.user:
-               users.append(u)
-          context={
-          'page':'AGENTPLAYER',
-          'users':list(users)
-     }
-     html_content = render_to_string('ugs_app/homepage/agentplayer_table.html', context)    
-     return HttpResponse(html_content)
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'AGENT':
+          users=[]
+          myusers = UserProfile.objects.select_related('useraccount')
+          for u in myusers:
+               if u.useraccount.user_agent == request.user:
+                    users.append(u)
+               context={
+               'page':'AGENTPLAYER',
+               'users':list(users)
+          }
+          html_content = render_to_string('ugs_app/homepage/agentplayer_table.html', context)    
+          return HttpResponse(html_content)
+    else:
+         return redirect(reverse('homepage'))
 
 
 @login_required(login_url='/')
@@ -1031,6 +1055,9 @@ def load_points(request):
     else:
          return redirect(reverse('homepage'))
     
+
+
+
 @csrf_exempt
 def loadAgentPoints(request):
     if request.method == 'POST':
@@ -1110,15 +1137,22 @@ def loadAgentPoints(request):
   
     return JsonResponse({'data': 'invalid method'})
 
+
+
+@login_required(login_url='/')
 def load_points_table(request):
-    agentPointsList = Points.objects.select_related('p_sender').all()
-    context = {
-        'page': 'loadPoints',
-        'agentPointsList': agentPointsList,
-        'LoadPointsForm': LoadPointsForm(),
-    }
-    html_content = render_to_string('ugs_app/homepage/load_points_table.html', context)
-    return HttpResponse(html_content)
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'AGENT':
+          agentPointsList = Points.objects.select_related('p_sender').all()
+          context = {
+               'page': 'loadPoints',
+               'agentPointsList': agentPointsList,
+               'LoadPointsForm': LoadPointsForm(),
+          }
+          html_content = render_to_string('ugs_app/homepage/load_points_table.html', context)
+          return HttpResponse(html_content)
+    else:
+         return redirect(reverse('homepage'))
 
 
 
@@ -1246,11 +1280,11 @@ def disburse(request):
                   Bet.objects.filter(id=bet.id, status='PENDING').update(won_amnt = wonamount, status=betstat, winStat=1)
                   gwallet=UserWallet.objects.get(user=bet.player.id)
                   curbalance=gwallet.w_balance
-                  pointbal=gwallet.w_points
+                  pointbal=gwallet.w_betwins
                   newbal=float(curbalance) + float(wonamount)
                   newpoint=int(pointbal) + float(wonamount)
                   gwallet.w_balance=newbal
-                  gwallet.w_points=newpoint
+                  gwallet.w_betwins=newpoint
                   gwallet.save() 
                # DISTRIBUTE WON AMOUNT ON PLAYER
                else:
@@ -1299,11 +1333,10 @@ def disburse(request):
 
                clwallet=UserWallet.objects.get(user=bet.player.id)
                curbal=clwallet.w_balance
-               pointbal=clwallet.w_points
+               pointbal=clwallet.w_betwins
                newbals=float(curbal) + float(refundamnt)
                newpoint=float(pointbal) + float(refundamnt)
                clwallet.w_balance=newbals
-               clwallet.w_points=newpoint
                clwallet.save()
 
           data = 'ok'
@@ -1577,11 +1610,12 @@ def updatewallet(request):
 
 @login_required(login_url='/')
 def userwallet(request):
-     users=[]
+     agent=UserAccount.objects.get(user=request.user.id)
      hwallet = UWalletCashout.objects.filter(cw_player=request.user).order_by('-cw_created')
      context={
           'page':'WALLET',
-          'transactions': hwallet
+          'transactions': hwallet,
+          'agent': agent
      }
      return render(request, 'ugs_app/homepage/user_wallet.html', context)
 
@@ -1592,10 +1626,13 @@ def cashoutPoints(request):
         code_point = get_random_string(12)
         code_cashout = code_point.upper()
         cashout = request.POST.get('cashout')
-        status = "valid" 
-
+        status = "invalid" 
+     
+        agent=UserAccount.objects.get(user=request.user.id)
         pwallet=UserWallet.objects.get(user=request.user.id)
         curbalance=pwallet.w_balance
+        tlcashout=pwallet.wallet_out
+        agentid = agent.user_agent.id
         
         try:
           hwallet = UWalletCashout.objects.filter(cw_player=request.user).order_by('-cw_created').first()
@@ -1625,37 +1662,44 @@ def cashoutPoints(request):
                     
                     if status == 'valid':
                         remaining = float(curbalance)-float(cashout)
-                        if remaining>0:
+                        totalcout = float(tlcashout)+float(cashout)
+                        if remaining>=0:
                            remainWalbal = remaining
-                        else:
-                           remainWalbal = 0
-
-                        try:
+                           
+                           try:
                               curbalance = float(curbalance)
                               cashout = float(cashout)
                               remaining = float(remaining)
-                        except ValueError:
+                              totalcout = float(totalcout)
+                              
+                           except ValueError:
+                              newBalance = remainWalbal
                               data = 'error'
-
-                        try:
+                    
+                           try:
                               user_profile = UserProfile.objects.get(id=request.user.id)
-                        except UserProfile.DoesNotExist:
+                           except UserProfile.DoesNotExist:
+                              newBalance = remainWalbal
                               data = 'error'
-                       
-                        pwallet.w_balance=remainWalbal
-                        pwallet.save()  
-
-                        transaction = UWalletCashout(
-                              cw_player=user_profile,
-                              cw_bal=curbalance,
-                              cw_out=cashout,
-                              cw_remaining=remaining,
-                              cw_code=code_cashout
-                         )
-                        transaction.save()
-
-                        data = 'ok'
-                        newBalance = remainWalbal
+                              
+                           pwallet.w_balance=remainWalbal
+                           pwallet.wallet_out=totalcout
+                           pwallet.save()  
+                              
+                           transaction = UWalletCashout(
+                           cw_player=user_profile,
+                           cw_bal=curbalance,
+                           cw_out=cashout,
+                           cw_remaining=remaining,
+                           cw_code=code_cashout,
+                           cw_agent=agentid
+                           )
+                           transaction.save()
+                           newBalance = remainWalbal
+                           data = 'ok'
+                        else:
+                           newBalance = curbalance
+                           data = 'invalid'
                     else:
                          newBalance = curbalance
                          data = 'tryagain'
@@ -1665,10 +1709,10 @@ def cashoutPoints(request):
         else:
              newBalance = curbalance 
              data = 'invalid'
-        return JsonResponse({'data': data, 'newPoints':newBalance})   
+    return JsonResponse({'data': data, 'newPoints':newBalance})   
 
 
-
+@login_required(login_url='/')
 def loadCashOutTbl(request):
     hwallet = UWalletCashout.objects.filter(cw_player=request.user).order_by('-cw_created')
     context={
@@ -1741,10 +1785,104 @@ def setlongwin(request):
                     #     print('longDivide <= 0')
         else:
             data = 'bad'
-          #   print('Invalid longDivide calculation')
     except Exception as e:
-     #    print(f"An error occurred: {e}")
         data = 'bad'
 
     return JsonResponse({'data': data})
+
+
+@login_required(login_url='/')
+def adstaking(request):
+    usertype = request.session.get('usertype')
+    if usertype == 'SUPER ADMIN':
+         user_id = request.user.id
+         adstakelist = Stakefund.objects.all().order_by('-s_id')
+         users=UserProfile.objects.all().order_by('-date_joined')
+
+         context = {
+            'page': 'staking',
+            'adstakelist': adstakelist,
+            'users':list(users)
+        }
+         return render(request, 'ugs_app/homepage/admin_staking.html', context)
+    else:
+         return redirect(reverse('homepage'))
+    
+
+
+@csrf_exempt
+def loadStaking(request):
+    if request.method == 'POST':
+        code_point = get_random_string(12)
+        code_stake = code_point.upper()
+        stakeamnt = request.POST.get('valstakeamnt')
+        user_id = request.POST.get('userId')
+
+        try:
+            stakeamnt = Decimal(stakeamnt)
+        except (ValueError, TypeError):
+            return JsonResponse({'data': 'error1'})
+
+        try:
+            receiver = UserProfile.objects.get(id=user_id)
+            sender = UserProfile.objects.get(id=request.user.id)
+        except UserProfile.DoesNotExist:
+            return JsonResponse({'data': 'error2'})
+
+        try:
+            with transaction.atomic():
+                stakefund = Stakefund.objects.create(
+                    s_code=code_stake,
+                    s_amount=stakeamnt,
+                    s_user=receiver,
+                    s_sender=sender
+                )
+                
+                stkwallet = UserWallet.objects.get(user=receiver.id)
+                stkwallet.w_stakebal += stakeamnt
+                stkwallet.save()
+
+            data = 'ok'
+        except Exception as e:
+            data = 'error'
+
+        return JsonResponse({'data': data})
+
+    return JsonResponse({'data': 'error3'})
+
+
+
+@login_required(login_url='/')
+def load_stake_tbl(request):
+    usertype = request.session.get('usertype')
+    if usertype == 'SUPER ADMIN':
+          adstakelist = Stakefund.objects.all().order_by('-s_id')
+          users=UserProfile.objects.all().order_by('-date_joined')
+          context = {
+            'page': 'staking',
+            'adstakelist': adstakelist,
+            'users':list(users)
+        }
+          html_content = render_to_string('ugs_app/homepage/load_stake_tbl.html', context)
+          return HttpResponse(html_content)
+    else:
+         return redirect(reverse('homepage'))
+  
+
+@login_required(login_url='/')
+def appstaking(request):
+    usertype = request.session.get('usertype')
+    if usertype == 'PLAYER' or usertype == 'AGENT':
+         user_id = request.user.id
+         adstakelist = Stakefund.objects.all().order_by('-s_id')
+         users=UserProfile.objects.all().order_by('-date_joined')
+
+         context = {
+            'page': 'staking',
+            'adstakelist': adstakelist,
+            'users':list(users)
+        }
+         return render(request, 'ugs_app/homepage/staking_player.html', context)
+    else:
+         return redirect(reverse('homepage'))
 # ------------------mmmmmmmmm---------------------------
