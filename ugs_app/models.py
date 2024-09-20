@@ -48,6 +48,7 @@ class UserWallet(models.Model):
     commission_rate=models.DecimalField(default=0.00,max_digits=5, decimal_places=2)
     default_rate=models.DecimalField(default=0.00,max_digits=5, decimal_places=2)
     wallet_out=models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    agent_cOut=models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return str(self.user.username +' - '+str(self.w_id))
@@ -152,7 +153,10 @@ class UWalletCashout(models.Model):
     cw_remaining = models.DecimalField(max_digits=10, decimal_places=2)
     cw_update = models.DateTimeField(auto_now=True)
     cw_created = models.DateTimeField(auto_now_add=True)
-    cw_agent = models.CharField(blank=True, max_length=100, null=True)
+    cw_agentid = models.CharField(blank=True, max_length=100, null=True)
+    cw_stat = models.CharField(max_length=50, default=0)
+    cw_approved = models.CharField(blank=True, max_length=100, null=True)
+    cw_appdate = models.CharField(blank=True, max_length=20, null=True)
     
     def __str__(self):
         return f"Player: {self.cw_player}, Cashout: {self.cw_out}, Remaining: {self.cw_remaining}"

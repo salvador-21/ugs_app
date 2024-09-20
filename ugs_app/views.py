@@ -84,8 +84,8 @@ def homepage(request):
 
 @login_required(login_url='/')
 def games(request):
-    usertype = request.session.get('usertype')
-    if usertype == 'PLAYER':
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'PLAYER':
           games=Games.objects.filter(g_status='OPEN')
           context={
                'page':'GAMES',
@@ -178,7 +178,6 @@ def arena(request,game_id):
      mywalabet=0
      mydrawbet=0
      mylongbet=0
-     print(game_id)
 
      try:
           g_arena=Games.objects.get(g_id=game_id)
@@ -187,7 +186,6 @@ def arena(request,game_id):
           meron_name=g_arena.g_redname
           wala_name=g_arena.g_bluename
           video=g_arena.g_link
-
           try:
                g_fight=Fight.objects.filter(f_game=g_arena).latest('f_created')
                fid=g_fight.f_id
@@ -202,14 +200,12 @@ def arena(request,game_id):
                          mymeronbet=0
                except Exception as e:
                     mymeronbet=0
-                    
                try:
                     mywalabet=Bet.objects.filter(fight=g_fight,status='PENDING',category='WALA',player=request.user).aggregate(total=Sum('amount'))['total'] 
                     if mywalabet is None:
                          mywalabet=0
                except Exception as e:
                     mywalabet=0
-               
                try:
                     mydrawbet=Bet.objects.filter(fight=g_fight,status='PENDING',category='DRAW',player=request.user).aggregate(total=Sum('amount'))['total'] 
                     if mydrawbet is None:
@@ -222,8 +218,6 @@ def arena(request,game_id):
                          mylongbet=0
                except Exception as e:
                     mylongbet=0
-               
-
                try:
                     meron=Bet.objects.filter(fight=fid,category='MERON').aggregate(total=Sum('amount'))['total']
                     if meron is None:
@@ -236,9 +230,6 @@ def arena(request,game_id):
                          wala=0
                except Exception as e:
                     wala=0
-               
-               
-
           except Exception as e:
                status='CLOSED'
                fnum=0
@@ -246,7 +237,6 @@ def arena(request,game_id):
                fwin=0
                flong=0
                fid=0
-
      except Exception as e:
           print(e)
 
@@ -267,16 +257,23 @@ def arena(request,game_id):
           'mybetwala':mywalabet,
           'mydrawbet':mydrawbet,
           'mylongbet':mylongbet,
-
           'dmeron':dmeron,
           'dwala':dwala,
-
           'nmeron':meron_name,
           'nwala':wala_name,
           'video':video
-
      }
      return render(request,'ugs_app/homepage/player_arena.html',context)
+
+
+
+
+
+
+
+
+
+
 
 @csrf_exempt
 def decla_arena(request,game_id):
@@ -357,8 +354,6 @@ def decla_arena(request,game_id):
                     draw=0
                     long=0
                     clong=0
-
-
           except Exception as e:
                print(e)
           
@@ -395,6 +390,18 @@ def decla_arena(request,game_id):
           return render(request,'ugs_app/homepage/decla_arena.html',context)
      else:
          return redirect(reverse('homepage'))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -504,20 +511,17 @@ def decla_games(request):
 
 @csrf_exempt
 def load_games(request):
-
      ggames=Games.objects.all().order_by('-g_created')
      # for g in ggames:
      #      g.g_created = g.g_created.strftime("%Y-%m-%d %I:%M %p")
      ldata=serialize('json',ggames)
      gdata=json.loads(ldata)
-     data='potaka'
      return JsonResponse(gdata,safe=False)
 
 
 @csrf_exempt
 def getgame(request):
      gid=request.POST.get('gid')
-   
      upgames=Games.objects.get(g_id=gid)
      # data=upgames
      # ldata=serialize('json',upgames)
@@ -531,10 +535,8 @@ def getgame(request):
           'category':upgames.g_category,
           'link':upgames.g_link,
           'image':str(upgames.g_image),
-          'status':upgames.g_status
-          
+          'status':upgames.g_status    
      }
-
      return JsonResponse({'data':data})
 
 # declarator
@@ -838,8 +840,8 @@ def timer(request):
 # ADMIN
 @login_required(login_url='/')
 def mydownlines(request):
-     usertype = request.session.get('usertype')
-     if usertype == 'ADMIN':
+     usertype_ss = request.session.get('usertype')
+     if usertype_ss == 'ADMIN':
           myagent=UserProfile.objects.all().select_related('useraccount')
           context={
                'page':'DOWNLINES',
@@ -871,8 +873,8 @@ def mydownlines(request):
 # -------------------mmmmmmmm---------------------------
 @login_required(login_url='/')
 def admin_points(request):
-    usertype = request.session.get('usertype')
-    if usertype == 'SUPER ADMIN':
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'SUPER ADMIN':
          user_id = request.user.id
          adminPointsList = Points.objects.select_related('p_sender').filter(p_sender=user_id)
          context = {
@@ -930,8 +932,8 @@ def loadAdminPoints(request):
 
 @login_required(login_url='/')
 def load_adpoints_table(request):
-    usertype = request.session.get('usertype')
-    if usertype == 'SUPER ADMIN':
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'SUPER ADMIN':
           user_id = request.user.id
           adminPointsList = Points.objects.select_related('p_sender').filter(p_sender=user_id)
           context = {
@@ -1047,7 +1049,7 @@ def load_points(request):
     if usertype_ss == 'AGENT':
           agentPointsList = Points.objects.select_related('p_sender').all()
           context = {
-               'page': 'loadPoints',
+               'page': 'LOAD POINTS',
                'agentPointsList': agentPointsList,
                'LoadPointsForm': LoadPointsForm(),
           }
@@ -1145,7 +1147,7 @@ def load_points_table(request):
     if usertype_ss == 'AGENT':
           agentPointsList = Points.objects.select_related('p_sender').all()
           context = {
-               'page': 'loadPoints',
+               'page': 'LOAD POINTS',
                'agentPointsList': agentPointsList,
                'LoadPointsForm': LoadPointsForm(),
           }
@@ -1604,24 +1606,8 @@ def updatewallet(request):
 
 #     return render(request, 'ugs_app/homepage/decla_games.html', {'fform': fform, 'data': data})
 
-
-
-
-
-@login_required(login_url='/')
-def userwallet(request):
-     agent=UserAccount.objects.get(user=request.user.id)
-     hwallet = UWalletCashout.objects.filter(cw_player=request.user).order_by('-cw_created')
-     context={
-          'page':'WALLET',
-          'transactions': hwallet,
-          'agent': agent
-     }
-     return render(request, 'ugs_app/homepage/user_wallet.html', context)
-
-
 @csrf_exempt
-def cashoutPoints(request):
+def cashoutwallet(request):
     if request.method == 'POST':
         code_point = get_random_string(12)
         code_cashout = code_point.upper()
@@ -1633,6 +1619,7 @@ def cashoutPoints(request):
         curbalance=pwallet.w_balance
         tlcashout=pwallet.wallet_out
         agentid = agent.user_agent.id
+        newtotalout = tlcashout
         
         try:
           hwallet = UWalletCashout.objects.filter(cw_player=request.user).order_by('-cw_created').first()
@@ -1692,10 +1679,11 @@ def cashoutPoints(request):
                            cw_out=cashout,
                            cw_remaining=remaining,
                            cw_code=code_cashout,
-                           cw_agent=agentid
+                           cw_agentid=agentid
                            )
                            transaction.save()
                            newBalance = remainWalbal
+                           newtotalout = totalcout
                            data = 'ok'
                         else:
                            newBalance = curbalance
@@ -1709,7 +1697,7 @@ def cashoutPoints(request):
         else:
              newBalance = curbalance 
              data = 'invalid'
-    return JsonResponse({'data': data, 'newPoints':newBalance})   
+    return JsonResponse({'data': data, 'newPoints':newBalance, 'newtotalout':newtotalout})   
 
 
 @login_required(login_url='/')
@@ -1793,9 +1781,8 @@ def setlongwin(request):
 
 @login_required(login_url='/')
 def adstaking(request):
-    usertype = request.session.get('usertype')
-    if usertype == 'SUPER ADMIN':
-         user_id = request.user.id
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'SUPER ADMIN':
          adstakelist = Stakefund.objects.all().order_by('-s_id')
          users=UserProfile.objects.all().order_by('-date_joined')
 
@@ -1854,8 +1841,8 @@ def loadStaking(request):
 
 @login_required(login_url='/')
 def load_stake_tbl(request):
-    usertype = request.session.get('usertype')
-    if usertype == 'SUPER ADMIN':
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'SUPER ADMIN':
           adstakelist = Stakefund.objects.all().order_by('-s_id')
           users=UserProfile.objects.all().order_by('-date_joined')
           context = {
@@ -1867,22 +1854,444 @@ def load_stake_tbl(request):
           return HttpResponse(html_content)
     else:
          return redirect(reverse('homepage'))
-  
+
+
 
 @login_required(login_url='/')
-def appstaking(request):
-    usertype = request.session.get('usertype')
-    if usertype == 'PLAYER' or usertype == 'AGENT':
-         user_id = request.user.id
-         adstakelist = Stakefund.objects.all().order_by('-s_id')
-         users=UserProfile.objects.all().order_by('-date_joined')
+def userwallet(request):
+     agent=UserAccount.objects.get(user=request.user.id)
+     hwallet = UWalletCashout.objects.filter(cw_player=request.user.id).order_by('-cw_id')
+     context={
+          'page':'WALLET',
+          'transactions': hwallet,
+          'agent': agent,
+     }
+     return render(request, 'ugs_app/homepage/user_wallet.html', context)
 
-         context = {
-            'page': 'staking',
-            'adstakelist': adstakelist,
-            'users':list(users)
-        }
-         return render(request, 'ugs_app/homepage/staking_player.html', context)
+
+@login_required(login_url='/')
+def cashoutapproval(request):
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'AGENT' or usertype_ss == 'SUPER ADMIN':
+          couthwallet = UWalletCashout.objects.filter(cw_agentid=request.user.id, cw_stat=0).select_related('cw_player').order_by('-cw_id')
+          total_approved = UWalletCashout.objects.filter(cw_agentid=request.user.id, cw_stat=1).aggregate(Sum('cw_out'))['cw_out__sum']
+          total_declined = UWalletCashout.objects.filter(cw_agentid=request.user.id, cw_stat=2).aggregate(Sum('cw_out'))['cw_out__sum']
+          total_current = UWalletCashout.objects.filter(cw_agentid=request.user.id, cw_stat=0).aggregate(Sum('cw_out'))['cw_out__sum']
+
+          if total_approved is None:
+               total_approved = 0
+          if total_declined is None:
+               total_declined = 0
+          if total_current is None:
+               total_current = 0
+          context = {
+               'page': 'CASHOUT APPROVAL',
+               'couttransact': couthwallet,
+               'total_approved': total_approved,
+               'total_declined': total_declined,
+               'total_current': total_current,
+               }
+          return render(request, 'ugs_app/homepage/cashout_approval.html', context)
     else:
-         return redirect(reverse('homepage'))
-# ------------------mmmmmmmmm---------------------------
+       return redirect(reverse('homepage'))
+    
+
+
+
+
+
+@csrf_exempt
+def coutapproval(request):
+    usertype_ss = request.session.get('usertype')
+    if usertype_ss == 'AGENT' or usertype_ss == 'SUPER ADMIN':
+        if request.method == 'POST':
+            coutstat = request.POST.get('coutstat')
+            vcoutid = request.POST.get('vcoutid')
+            coutstat = int(coutstat)
+            reqbal = ""
+            appbal = ""
+            decbal = ""
+            wallbal = ""
+            try:
+                cotwallet = UWalletCashout.objects.get(cw_code=vcoutid, cw_stat=0)
+                cotwallet.cw_stat = coutstat
+                cotwallet.cw_approved=request.user.id
+                cotwallet.cw_appdate=timezone.now()
+                cotwallet.save()
+
+                agntwallet = UserWallet.objects.get(user=cotwallet.cw_agentid)
+                wallbal = agntwallet.w_balance
+
+                total_current = UWalletCashout.objects.filter(cw_agentid=request.user.id, cw_stat=0).aggregate(Sum('cw_out'))['cw_out__sum']   
+                total_approved = UWalletCashout.objects.filter(cw_agentid=request.user.id, cw_stat=1).aggregate(Sum('cw_out'))['cw_out__sum']
+                total_declined = UWalletCashout.objects.filter(cw_agentid=request.user.id, cw_stat=2).aggregate(Sum('cw_out'))['cw_out__sum']
+                if total_current is None:
+                   total_current = 0
+                if total_approved is None:
+                   total_approved = 0
+                if total_declined is None:
+                   total_declined = 0
+                reqbal = total_current
+                appbal = total_approved
+                decbal = total_declined
+                
+                if coutstat == 1:
+                     agntwallet.w_balance += cotwallet.cw_out
+                     agntwallet.agent_cOut += cotwallet.cw_out
+                     agntwallet.save()
+                     data = 'approved'
+                     wallbal = agntwallet.w_balance
+                elif coutstat == 2:
+                     cawallet = UserWallet.objects.get(user=cotwallet.cw_player.id)
+                     cawallet.w_balance += cotwallet.cw_out
+                     cawallet.wallet_out -= cotwallet.cw_out
+                     cawallet.save()
+                     data = 'declined'
+                else:
+                     data = 'error'
+            except UWalletCashout.DoesNotExist:
+                data = 'bad'
+            except Exception as e:
+               data = 'bad'
+
+            return JsonResponse({'data': data, 'bal': wallbal, 'reqbal': reqbal, 'appbal': appbal, 'decbal': decbal}) 
+    else:
+        return redirect(reverse('homepage'))
+    
+
+
+
+
+@login_required(login_url='/')
+def loadagentcOut(request):
+     usertype_ss = request.session.get('usertype')
+     if usertype_ss == 'AGENT' or usertype_ss == 'SUPER ADMIN':
+          couthwallet = UWalletCashout.objects.filter(cw_agentid=request.user.id, cw_stat=0).select_related('cw_player').order_by('-cw_id')
+          context = {
+               'page': 'CASHOUT APPROVAL',
+               'couttransact': couthwallet,
+               }
+          html_content = render_to_string('ugs_app/homepage/load_agentcOut_table.html', context)
+          return HttpResponse(html_content)
+     else:
+        return redirect(reverse('homepage'))
+
+
+
+
+
+
+
+
+
+
+# MANUAL GETTING DATA
+def betdata(request, game_id):
+     fstatus=''
+     fid=''
+     meron=0
+     wala=0
+     fnum=0
+     mymeronbet=0
+     mywalabet=0
+     mydrawbet=0
+     mylongbet=0
+
+     try:
+          g_arena=Games.objects.get(g_id=game_id)
+          gname=g_arena.g_name
+          gid=g_arena.g_id
+          meron_name=g_arena.g_redname
+          wala_name=g_arena.g_bluename
+          video=g_arena.g_link
+
+          try:
+             cgame=Games.objects.get(g_id=game_room)
+             plasada=cgame.g_plasada
+          except Exception as e:
+             plasada=0
+
+          try:
+               g_fight=Fight.objects.filter(f_game=g_arena).latest('f_created')
+               fid=g_fight.f_id
+               status=g_fight.f_status
+               fnum=g_fight.f_number
+               fmulti=g_fight.f_multiplier
+               fwin=g_fight.f_winner
+               flong=g_fight.f_longest
+               try:
+                    mymeronbet=Bet.objects.filter(fight=g_fight,status='PENDING',category='MERON',player=request.user).aggregate(total=Sum('amount'))['total']
+                    if mymeronbet is None:
+                         mymeronbet=0
+               except Exception as e:
+                    mymeronbet=0
+               try:
+                    mywalabet=Bet.objects.filter(fight=g_fight,status='PENDING',category='WALA',player=request.user).aggregate(total=Sum('amount'))['total'] 
+                    if mywalabet is None:
+                         mywalabet=0
+               except Exception as e:
+                    mywalabet=0
+               try:
+                    mydrawbet=Bet.objects.filter(fight=g_fight,status='PENDING',category='DRAW',player=request.user).aggregate(total=Sum('amount'))['total'] 
+                    if mydrawbet is None:
+                         mydrawbet=0
+               except Exception as e:
+                    mydrawbet=0
+               try:
+                    mylongbet=Longestfight.objects.filter(l_status='WAITING',l_category='LONGEST',l_player=request.user).aggregate(total=Sum('l_amount'))['total'] 
+                    if mylongbet is None:
+                         mylongbet=0
+               except Exception as e:
+                    mylongbet=0
+               try:
+                    meron=Bet.objects.filter(fight=fid,category='MERON').aggregate(total=Sum('amount'))['total']
+                    if meron is None:
+                         meron=0
+               except Exception as e:
+                    meron=0
+               try:
+                    wala=Bet.objects.filter(fight=fid,category='WALA').aggregate(total=Sum('amount'))['total'] 
+                    if wala is None:
+                         wala=0
+               except Exception as e:
+                    wala=0
+
+               totmw=meron + wala
+
+               # PLASADA
+               totpla=float(plasada) * float(totmw) 
+               
+               lesspla=totmw - totpla
+
+               if meron > 0:    
+                         meronlesspla=lesspla/meron
+               else:
+                    meronlesspla=lesspla
+               
+               if wala > 0:    
+                         walalesspla=lesspla/wala
+                         walapayout=walalesspla * 100
+               else:
+                    walalesspla=lesspla
+               
+               walapayout=walalesspla * 100
+               meronpayout=meronlesspla * 100
+               
+               # odds
+               meronodds=meronpayout * .01
+               walaodds=walapayout * .01
+               
+               # topay=odds*player bet
+               merontowin=meronodds * mymeronbet
+               walatowin=walaodds * mywalabet
+
+               # player dummy total bet
+               dmeron=fmulti*meron
+               dwala=fmulti*wala
+               
+          except Exception as e:
+               status='CLOSED'
+               fnum=0
+               fmulti=0
+               fwin=0
+               flong=0
+               fid=0
+     except Exception as e:
+          print(e)
+
+     dmeron=float(meron)*float(fmulti)
+     dwala=float(wala)*float(fmulti)
+     wallet=UserWallet.objects.get(user=request.user)
+     wbalance=wallet.w_balance
+     data={
+          'page':'ARENA',
+          'game':game_id,
+          'game_name':gname,
+          'betstat':status,
+          'fight_id':fid,
+          'fnumber':fnum,
+          'mybetmeron':mymeronbet,
+          'myWalaBet':mywalabet,
+          'mydrawbet':mydrawbet,
+          'mylongbet':mylongbet,
+          'dmeron':dmeron,
+          'dwala':dwala,
+          'nmeron':meron_name,
+          'nwala':wala_name,
+          'video':video,
+          'fwin':fwin,
+          'meronpayout':meronpayout,
+          'merontowin':merontowin,
+          'walapayout':walapayout,
+          'walatowin':walatowin,
+          'myWalaBet':mywalabet,
+          'mywallet':int(wbalance)
+     }
+     return JsonResponse(data)
+     # MANUAL GETTING DATA
+
+
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# DECLA GETTING DATA MANUALLY
+def decladata(request, game_room):
+     user=request.user.id
+     wbalance=0
+     try:
+          cgame=Games.objects.get(g_id=game_room)
+          plasada=cgame.g_plasada
+     except Exception as e:
+          plasada=0
+          
+     try:
+          gf=Fight.objects.filter(f_game=game_room).latest('f_created')
+          fid=gf.f_id
+          fmulti=gf.f_multiplier
+          status=gf.f_status
+          game_num=gf.f_number
+          winner=gf.f_winner
+     except Exception as e:
+          fid=0
+          status=''
+          game_num=0
+          fmulti=0
+          winner=''
+
+     try:
+         meron=Bet.objects.filter(fight=fid,category='MERON').aggregate(total=Sum('amount'))['total']
+         if meron is None:
+            meron=0
+     except Exception as e:
+          meron=0
+    
+     try:
+          wala=Bet.objects.filter(fight=fid,category='WALA').aggregate(total=Sum('amount'))['total'] 
+          if wala is None:
+              wala=0
+     except Exception as e:
+          wala=0
+     
+     try:
+          draw=Bet.objects.filter(fight=fid,category='DRAW').aggregate(total=Sum('amount'))['total'] 
+          longest=Longestfight.objects.filter(l_status='WAITING',l_category='LONGEST').aggregate(total=Sum('l_amount'))['total']
+          if draw is None:
+               draw=0
+          if longest is None: 
+               longest=0
+     except Exception as e:
+          draw=0
+          longest=0
+
+     try:
+          mymeronbet=Bet.objects.filter(fight=fid,status='PENDING',category='MERON').aggregate(total=Sum('amount'))['total']
+          if mymeronbet is None:
+              mymeronbet=0
+     except Exception as e:
+        mymeronbet=0
+
+     try:
+          mywalabet=Bet.objects.filter(fight=fid,status='PENDING',category='WALA').aggregate(total=Sum('amount'))['total'] 
+          if mywalabet is None:
+              mywalabet=0
+     except Exception as e:
+          mywalabet=0
+
+     try:
+          mydrawbet=Bet.objects.filter(fight=fid,status='PENDING',category='DRAW').aggregate(total=Sum('amount'))['total'] 
+          if mydrawbet is None:
+              mydrawbet=0
+     except Exception as e:
+          mydrawbet=0
+        
+     try:
+          mylongbet=Longestfight.objects.filter(l_status='PENDING',l_category='LONGEST').aggregate(total=Sum('l_amount'))['total'] 
+          if mylongbet is None:
+             mylongbet=0
+     except Exception as e:
+          mylongbet=0
+
+     totmw=meron + wala
+     totpla=float(plasada) * float(totmw) 
+     lesspla=totmw - totpla
+     if meron > 0:    
+          meronlesspla=lesspla/meron
+     else:
+          meronlesspla=lesspla
+
+     if wala > 0:    
+          walalesspla=lesspla/wala
+          walapayout=walalesspla * 100
+     else:
+          walalesspla=lesspla
+
+     walapayout=walalesspla * 100
+     meronpayout=meronlesspla * 100
+     # odds
+     meronodds=meronpayout * .01
+     walaodds=walapayout * .01
+     # topay=odds*player bet
+     merontowin=meronodds * mymeronbet
+     walatowin=walaodds * mywalabet
+     # player dummy total bet
+     dmeron=fmulti*meron
+     dwala=fmulti*wala
+
+     data={
+             'game_id':game_room,
+              'fightnum':game_num,
+              'fightid':str(fid),
+              'multi':str(fmulti),
+              'bet_status':status,
+              'winner':winner,
+              'dmeron':dmeron,
+              'dwala':str(dwala),
+              'meron':meron,
+              'wala':wala,
+              'draw':draw,
+              'longest':longest,
+              'myMeronBet':mymeronbet,
+              'myWalaBet':mywalabet,
+              'mydrawbet':mydrawbet,
+              'mylongbet':mylongbet,
+              'totmw':totmw,
+              'totpla':totpla,
+              'lesspla':lesspla,
+              'meronlesspla':meronlesspla,
+              'walalesspla':walalesspla,
+              'meronpayout':meronpayout,
+              'walapayout':walapayout,
+              'meronodds':meronodds,
+              'walaodss':walaodds,
+              'merontowin':merontowin,
+              'walatowin':walatowin,
+              'mywallet':int(wbalance)
+
+        }
+     return JsonResponse(data)

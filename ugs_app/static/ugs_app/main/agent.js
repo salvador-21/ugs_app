@@ -4,7 +4,7 @@ $(document).on('click','.btn-actvateplyr',function(){
     acc=$(this).attr('acct')
     comrate=$(this).attr('comrate')
     usertype=$(this).attr('plstat')
-
+    
     if(usertype == 'PLAYER'){
         document.getElementById('commission').readOnly  = true;
         document.getElementById('commission').value = '0.00';
@@ -32,7 +32,7 @@ $(document).on('submit','#activate_form',function(e){
     var commission = document.getElementById("commission").value;
     var acct_id    = document.getElementById("acct_id").value;
     var commirate    = document.getElementById("commirate").value;
-
+    
     if(plstatus!=""){
         document.getElementById("nfplstatus").innerHTML = '';
         if(commission!=""){
@@ -69,6 +69,15 @@ $(document).on('submit','#activate_form',function(e){
         }else{document.getElementById("nfcommission").innerHTML = 'Required!'; $("#commission").focus();}
     }else{document.getElementById("nfplstatus").innerHTML = 'Required!'; $("#plstatus").focus();}
 })
+
+
+
+
+
+
+
+
+
 
 
 

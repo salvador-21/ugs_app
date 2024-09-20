@@ -1,24 +1,17 @@
 <!doctype html>
 {% load static %}
-
 <html lang="en">
-   
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Title -->
     <title>UGS- {{page}}</title>
-    <!-- Favicon -->
     <link rel="icon" href="{% static 'ugs_app/img/logo2.png' %}">
-    <!-- Plugins File -->
     <link rel="stylesheet" href="{% static 'ugs_app/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'ugs_app/css/animate.css' %}">
     <link rel="stylesheet" href="{% static 'ugs_app/css/dataTables.bootstrap5.min.css' %}">
     <link rel="stylesheet" href="{% static 'ugs_app/css/buttons.bootstrap5.min.css' %}">
     <link rel="stylesheet" href="{% static 'ugs_app/css/select.dataTables.min.css' %}">
     <link rel="stylesheet" href="{% static 'ugs_app/css/sweetalert2.min.css' %}">
-
-    <!-- Master Stylesheet [If you remove this CSS file, your file will be broken undoubtedly.] -->
     <link rel="stylesheet" href="{% static 'ugs_app/style.css' %}">
     <link rel="stylesheet" href="{% static 'ugs_app/build/toastr.css' %}">
 </head>
@@ -28,75 +21,48 @@
         -webkit-appearance: none;
         margin: 0;
     }
-    
-        </style>
-<!-- <body oncontextmenu="return false"> -->
-    <body >
-
+    .btn-pill{
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+</style>
+<body >
     <div  id="preloader">
         <div class="chicken-loader" >
             <span class="eye"></span>
-          </div>
+        </div>
     </div>
-    <!-- /Preloader -->
-
-    
-    <!-- ======================================
-    ******* Page Wrapper Area Start **********
-    ======================================= -->
     <div class="flapt-page-wrapper">
-        <!-- Sidemenu Area -->
         <div class="flapt-sidemenu-wrapper">
-            <!-- Desktop Logo -->
             <div class="flapt-logo">
                 <a href="{% url 'homepage' %}">
-                    
                     <img class="desktop-logo bounce" src="{% static 'ugs_app/img/logo.png' %}" alt="Desktop Logo"> 
                     <img class="small-logo" src="{% static 'ugs_app/img/logo2.png' %}" alt="Mobile Logo"></a>
-            </div>
-
-            <!-- Side Nav -->
-            <div class="flapt-sidenav" id="flaptSideNav">
-                <!-- Side Menu Area -->
-                <div class="side-menu-area">
-                    <!-- Sidebar Menu -->
-                    {% include './include/sidebar.html' %}
                 </div>
-
-                <!-- Upgrade Card -->
-                <div class="upgrade-card card">
-                    <div class="card-body">
-                        
-                        <img class="mb-4" src="{% static 'ugs_app/img/bg-img/1.png' %}" alt="">
-                        <!-- <h4>1000000</h4> -->
-                        <a class="btn btn-sm btn-warning fs-4 " href="{% url 'home_stake' %}">CLOCK STAKING</a>
+                <div class="flapt-sidenav" id="flaptSideNav">
+                    <div class="side-menu-area">
+                        {% include './include/sidebar.html' %}
+                    </div>
+                    <div class="upgrade-card card">
+                        <div class="card-body">
+                            <img class="mb-4" src="{% static 'ugs_app/img/bg-img/1.png' %}" alt="">
+                            <a class="btn btn-sm btn-warning fs-4 " href="{% url 'home_stake' %}">CLOCK STAKING</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Page Content -->
-        <div class="flapt-page-content">
-            <!-- Top Header Area -->
-            {% include './include/header.html' %}
-
-            <!-- Main Content Area -->
-            <div class="main-content">
-                <div class="content-wraper-area">
-                    {% block body %}
-
-                    {% endblock%}
-                </div>
-
-                <!-- Footer Area -->
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12">
-                            <!-- Footer Area -->
-                            <footer
+            <div class="flapt-page-content">
+                {% include './include/header.html' %}
+                <div class="main-content">
+                    <div class="content-wraper-area">
+                        {% block body %}
+                        {% endblock%}
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <footer
                                 class="footer-area d-sm-flex justify-content-center align-items-center justify-content-between">
-                                <!-- Copywrite Text -->
-                              
                                 <div class="fotter-icon text-center">
                                     <p class="mb-0 font-13">2024 &copy; <a href="">Ultimate Gaffed Sports</a></p>
                                 </div>
@@ -111,7 +77,7 @@
     {% if user.useraccount.usertype == 'ADMIN' %}
     {% include 'ugs_app/include/admin_modals.html' %}
     {% endif%}
-
+    
     {% if page == 'STAKING' %}
     {% include 'staking/modal/index.html' %}
     {% endif %}
@@ -139,14 +105,13 @@
     <script src="{% static 'ugs_app/js/buttons.html5.min.js' %}"></script>
     <script src="{% static 'ugs_app/js/jszip.min.js' %}"></script>
     <script src="{% static 'ugs_app/js/dataTables-custom.js' %}"></script>
-   
+    
     <script src="{% static 'ugs_app/js/sweetalert2.all.min.js' %}"></script>
     <!-- <script src="{% static 'ugs_app/js/sweetalert-custom.js' %}"></script> -->
     <!-- Active JS -->
     <script src="{% static 'ugs_app/js/todo-list.js' %}"></script>
     <script src="{% static 'ugs_app/js/default-assets/active.js' %}"></script>
     <script src="{% static 'ugs_app/build/toastr.js' %}"></script>
-
     <!-- These plugins only need for the run this page -->
     {% if page == 'HOMEPAGE'%}
     <!-- <script src="{% static 'ugs_app/js/apexcharts.min.js' %}"></script> -->
@@ -154,57 +119,32 @@
     <script src="{% static 'ugs_app/js/clipboard.min.js' %}"></script>
     <script src="{% static 'ugs_app/js/clipboard-active.js' %}"></script>
     {% endif %}
-
     {% if page == 'ARENA'%}
     <script src="{% static 'ugs_app/main/arena.js' %}"></script>
     {% endif %}
-
     {% if page == 'SETTING'%}
     <script src="{% static 'ugs_app/main/setting.js' %}"></script>
     {% endif %}
-    
     {% if user.useraccount.usertype == 'SUPER ADMIN' %}
     <script src="{% static 'ugs_app/main/admin.js' %}"></script>
     {% endif %}
-    {% if user.useraccount.usertype == 'ADMIN' %}
+    {% if user.useraccount.usertype == 'ADMIN' or user.useraccount.usertype == 'SUPER ADMIN' or user.useraccount.usertype == 'AGENT' %}
     <script src="{% static 'ugs_app/main/agentadmin.js' %}"></script>
     {% endif %}
     {% if user.useraccount.usertype == 'DECLARATOR' %}
     <script src="{% static 'ugs_app/main/decla.js' %}"></script>
     {% endif %}
-    {% if user.useraccount.usertype != 'SUPER ADMIN' %}
     <script src="{% static 'ugs_app/main/default.js' %}"></script>
-    {% endif %}
     {% if user.useraccount.usertype == 'AGENT' %}
     <script src="{% static 'ugs_app/main/agent.js' %}"></script>
     {% endif %}
-
-    <!-- Staking Js -->
-
     {% if page == 'STAKING'%}
     <script src="{% static 'ugs_app/staking/index.js' %}"></script>
-    
     {% endif %}
-
-    
-
     <script>
-         $(document).on('click','.staking_url',function(){
+        $(document).on('click','.staking_url',function(){
             window.location.href='staking/'
-           
         })
-    //     $('body').attr('oncontextmenu','return false')
-       
-    //     document.onkeydown = function(e) {
-    //         if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 85 || e.keyCode === 117)) {
-    //             //Alt+c, Alt+v will also be disabled sadly.
-    //             // alert('not allowed');
-    //         }
-    //         return false;
-       
-    // };
     </script>
-  
 </body>
-
 </html>

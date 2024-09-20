@@ -107,7 +107,7 @@ ASGI_APPLICATION = 'ugs_proj.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ugs_db_082324',
+        'NAME': 'ugs_db_090624',
         'USER': 'root',
         'PASSWORD':'',
         'HOST':'localhost',

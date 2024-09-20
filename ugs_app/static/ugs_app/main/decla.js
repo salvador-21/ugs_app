@@ -1,9 +1,9 @@
 $(document).ready(function(){
+    
     $(document).on('click','.nxtfight',function(){
         fight=$(this).attr('game')
         game=$(this).attr('id')
         multi=$('.bmulti').val()
-        
         Swal.fire({
             title: 'Next Fight?',
             text: "Please confirm your Action!",
@@ -20,7 +20,7 @@ $(document).ready(function(){
                     data:{fight:fight,game:game,multi,multi},
                     success:function(res){
                         get_fight(game)
-                        
+                        fetchDeclaData()
                     }
                 })
             }
@@ -49,13 +49,14 @@ $(document).ready(function(){
                     url:'../../disburse',
                     data:{fight:fight},
                     success:function(res){
-                        socket.send(JSON.stringify({
-                            'bet_stat': 'DONE',
-                            'amount': 0,
-                            'betin':'',
-                            'fight_no':'',
-                            
-                        }))                        
+                        fetchDeclaData()
+                        // socket.send(JSON.stringify({
+                        //     'bet_stat': 'DONE',
+                        //     'amount': 0,
+                        //     'betin':'',
+                        //     'fight_no':'',
+                        
+                        // }))                        
                     }
                 })
             }
@@ -85,12 +86,13 @@ $(document).ready(function(){
                     url:'../../revert',
                     data:{fight:fight},
                     success:function(res){
-                        socket.send(JSON.stringify({
-                            'bet_stat': 'CLOSE',
-                            'amount': 0,
-                            'betin':'',
-                            'fight_no':'',
-                        }))
+                        fetchDeclaData()
+                        // socket.send(JSON.stringify({
+                        //     'bet_stat': 'CLOSE',
+                        //     'amount': 0,
+                        //     'betin':'',
+                        //     'fight_no':'',
+                        // }))
                     }
                 })
             }
@@ -106,7 +108,6 @@ $(document).ready(function(){
         winner=$(this).attr('id')
         fight=$(this).attr('game')
         gameid=$(this).attr('gameid')
-        
         if(winner != 'DRAW'){
             msg=winner+' WINS?'
         }else{
@@ -127,14 +128,13 @@ $(document).ready(function(){
                     url:'../../setwinner',
                     data:{fight:fight,winner:winner,gameid:gameid},
                     success:function(res){
-                        socket.send(JSON.stringify({
-                            'bet_stat': 'DECLARED',
-                            'amount': 0,
-                            'betin':'',
-                            'fight_no':'',
-                            
-                            
-                        }))
+                        fetchDeclaData()
+                        // socket.send(JSON.stringify({
+                        //     'bet_stat': 'DECLARED',
+                        //     'amount': 0,
+                        //     'betin':'',
+                        //     'fight_no':'',
+                        // }))
                     }
                 })
             }
@@ -190,12 +190,13 @@ $(document).ready(function(){
                                 icon: "error"
                             });
                         }
-                        socket.send(JSON.stringify({
-                            'bet_stat': 'DECLARED',
-                            'amount': 0,
-                            'betin':'',
-                            'fight_no':'',
-                        }))
+                        fetchDeclaData()
+                        // socket.send(JSON.stringify({
+                        //     'bet_stat': 'DECLARED',
+                        //     'amount': 0,
+                        //     'betin':'',
+                        //     'fight_no':'',
+                        // }))
                     }
                 })
             }
@@ -240,7 +241,6 @@ $(document).ready(function(){
             confirmButtonText: "Proceed!"
         }).then((result) => {
             if (result.isConfirmed) {
-                // ///////////////////////////
                 if(fnum == 0 || fmulti == 0){
                     Swal.fire({
                         title: "Please Input a Valid Entry!",
@@ -254,6 +254,7 @@ $(document).ready(function(){
                         data:data,
                         success:function(res){
                             get_fight(gfid)
+                            fetchDeclaData()
                             if(res.data == 'update'){
                                 Swal.fire({
                                     title: "Update Successfully!",
@@ -282,18 +283,12 @@ $(document).ready(function(){
                     })
                     
                 }
-                
-                // //////////////////////////
             }
-        });
-        
-        
-        
+        });  
     })
     
     // Fight sub
     $('.sub_type').on('change',function(){
-        
         if( $(this).is(':checked') ){
             $('.fsubmit').text('Update Current Fight?')
             $('.ftype').text('Update Existing Fight?')
@@ -301,10 +296,11 @@ $(document).ready(function(){
         else{
             $('.fsubmit').text('Create New Fight?')
             $('.ftype').text('Create New Fight?')
-        }
-        
-        
+        } 
     })
+    
+    
+    
     
     //  load_games()
     function load_games(){
@@ -339,10 +335,10 @@ $(document).ready(function(){
         
         
     }
-    // /////////////// add fight modal
     
     
-    // ///////////////del games
+    
+    
     
     $(document).on('click','.del_games',function(){
         did=$(this).attr('id')
@@ -357,7 +353,6 @@ $(document).ready(function(){
             confirmButtonText: "Proceed!"
         }).then((result) => {
             if (result.isConfirmed) {
-                // ///////////////////////////
                 $.ajax({
                     method:'POST',
                     url:'delgame',
@@ -365,20 +360,22 @@ $(document).ready(function(){
                     success:function(res){
                         if(res.data == 'ok'){
                             load_games()
+                            fetchDeclaData()
                         }
                     }
                 })
-                
-                // //////////////////////////
             }
         });
         
     })
+    
+    
+    
+    
     // //////////////////// add games
     $('#addgame').on('submit',function(e){
         e.preventDefault()
         $('.msg').html('')
-        
         $.ajax({
             url: "add_games",
             type: "POST",
@@ -394,7 +391,6 @@ $(document).ready(function(){
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>\
                 </div>')
                         $('#addgame').trigger('reset')
-                        
                     }
                 },
                 error: function(){
@@ -402,6 +398,8 @@ $(document).ready(function(){
                 }
             });
         })
+        
+        
         
         // ///////////////// update game
         function get_fight(gfid){
@@ -421,24 +419,21 @@ $(document).ready(function(){
                     $('.f_longest').val(res.data.flong)
                     $('.fnum_dis').text(res.data.fnum)
                     $('.fgame').val(cgame)
-                    
                     $('.notif').html('')
                     $('.controls').html('')
-                    
-                    
-                    socket.send(JSON.stringify({
-                        'bet_stat': 'OPEN',
-                        'amount': 0,
-                        'betin':'',
-                        'fight_no':res.data.fnum,
-                        
-                        
-                    }))
-                    
-                    
+                    fetchDeclaData()
+                    // socket.send(JSON.stringify({
+                    //     'bet_stat': 'OPEN',
+                    //     'amount': 0,
+                    //     'betin':'',
+                    //     'fight_no':res.data.fnum,
+                    // }))
                 }
             })
         }
+        
+        
+        
         
         $('#updategame').on('submit',function(e){
             e.preventDefault()
@@ -457,14 +452,16 @@ $(document).ready(function(){
                     });
                     $('#updategames').modal('hide')
                     load_games()
-                    
                 },
                 error: function(){
                     alert(res.data)
                 }
             });
         })
-        // //////////////////
+        
+        
+        
+        
         
         // /////////////// UPDATE
         $(document).on('click','.g_update',function(){
@@ -494,6 +491,9 @@ $(document).ready(function(){
             })
         })
         
+        
+        
+        
         // /////////// control btn
         $(document).on('click','.callbtn',function(){
             gfid=$('#gid').val()
@@ -516,7 +516,6 @@ $(document).ready(function(){
                     confirmButtonText: "Proceed!"
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // ///////////////////////////
                         $.ajax({
                             method:'POST',
                             url:'../../fight_stat',
@@ -524,246 +523,428 @@ $(document).ready(function(){
                             success:function(res){
                                 if(res.data == 1){
                                     get_fight(gfid)
+                                    fetchDeclaData()
                                 }
                             }
                         })
-                        
-                        // //////////////////////////
                     }
                 });
-                
             }
-            
-            
-            
         })
         
-        // /////////// WEBSOCKET
-        const ongame=JSON.parse(document.getElementById('arena_game').textContent)
-        var socket= new WebSocket('ws://'+window.location.host+'/ws/arena/'+ongame);
         
         
-        socket.onmessage =function(e){    
-            // ON MESSAGE
-            result=JSON.parse(e.data)
-            $('.notif').html('')
-            $('.controls').html('')
-            
-            if(result.winner == 'MERON'){
-                $('.meron_box').addClass('meron-win')
-                $('.wala_box').removeClass('wala-win')
-                $('.draw_box').removeClass('draw-win')
-                $('#meron-win').attr('hidden',false)
-                $('#wala-win').attr('hidden',true)
-                $('#draw-win').attr('hidden',true)
-            }else if(result.winner == 'WALA'){
-                $('.meron_box').removeClass('meron-win')
-                $('.draw_box').removeClass('draw-win')
-                $('.wala_box').addClass('wala-win')
-                $('#meron-win').attr('hidden',true)
-                $('#wala-win').attr('hidden',false)
-                $('#draw-win').attr('hidden',true)
-            }else if(result.winner == 'DRAW'){
-                $('.draw_box').addClass('draw-win')
-                $('.meron_box').removeClass('meron-win')
-                $('.wala_box').removeClass('wala-win')
-                $('#meron-win').attr('hidden',true)
-                $('#wala-win').attr('hidden',true)
-                $('#draw-win').attr('hidden',false)
-            }else if(result.winner == ''){
-                $('.meron_box').removeClass('meron-win')
-                $('.wala_box').removeClass('wala-win')
-                $('.draw_box').removeClass('draw-win')
-                $('#meron-win').attr('hidden',true)
-                $('#wala-win').attr('hidden',true)
-                $('#draw-win').attr('hidden',true)
-            }
-            
-            
-            notif=''
-            if(result.bet_status == 'OPEN'){
-                ctr='<button class="btn btn-warning callbtn col-12 fs-2 mb-2 " typ="LAST CALL" game="'+result.fightid+'">LAST CALL BET</button>'
-                notif='<span class="badge bg-success fw-bolder fs-4 closenotif" >OPEN</span>'
-            }else if(result.bet_status == 'LAST CALL'){
-                ctr='<button class="btn btn-danger callbtn col-12 fs-2 mb-2 " typ="CLOSING" game="'+result.fightid+'">CLOSE BET</button>'
-                notif='<span class="badge bg-warning text-danger fw-bolder fs-4  blink callnotif" >LAST CALL</span>'
-                
-            }else if(result.bet_status == 'CLOSING'){
-                ctr='<div class="row"> <div class="col-6 mt-2">\
-             <button class="btn btn-danger fs-2 w-100 betwin" game="'+result.fightid+'"  id="MERON" gameid="'+result.game_id+'">MERON WIN?</button></div>\
-             <div class="col-6 mt-2">\
-               <button class="btn btn-primary fs-2 w-100 betwin" game="'+result.fightid+'" id="WALA" gameid="'+result.game_id+'">WALA WIN?</button>\
-               </div><div class="col-6 mt-2">\
-                <button class="btn btn-success fs-2 w-100 betwin" game="'+result.fightid+'" id="DRAW" gameid="'+result.game_id+'">DRAW WIN?</button>\
-              </div><div class="col-6 mt-2">\
-               <button class="btn btn-secondary fs-2 w-100 betwin"  game="'+result.fightid+'" id="CANCELLED" gameid="'+result.game_id+'">CANCEL FIGHT?</button>\
-                    </div></div>\
-                <br>\
-               <button class="btn btn-warning fs-2 w-100 longbetwin"  game="'+result.fightid+'" id="LONGEST" gameid="'+result.game_id+'">LONGEST FIGHT?</button>'
-                
-                notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
-                
-            }else if(result.bet_status == 'DECLARED'){
-                notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
-                ctr='<div class="row"><div class="col-12 mt-2">\
-              <button class="btn btn-secondary fs-2 w-100 revert_btn"  game="'+result.fightid+'" >REVERT?</button>\
-               </div> <div class="col-12 mt-2">\
-                <button class="btn btn-danger fs-2 w-100 disburse_btn"  game="'+result.fightid+'"  >DISBURSE </button>\
-               </div></div>\
-               <br>\
-               <button class="btn btn-warning fs-2 w-100 longbetwin"  game="'+result.fightid+'" id="LONGEST" gameid="'+result.game_id+'">LONGEST FIGHT?</button>'
-                
-                
-                
-            }else if(result.bet_status == 'CLOSED'){
-                notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
-                ctr='<button class="btn btn-success callbtn col-12 fs-2 mb-2 " typ="OPEN" game="'+result.fightid+'">OPEN BET</button>'
-            }else if(result.bet_status == 'DONE'){
-                notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
-                ctr='<button class="btn btn-success nxtfight col-12 fs-2 mb-2  " id="'+result.game_id+'" typ="NEW"  game="'+result.fightid+'" > NEW FIGHT?</button>'
-                $('.meron_box').removeClass('meron-win')
-                $('.wala_box').removeClass('wala-win')
-                $('.draw_box').removeClass('draw-win')
-                $('#meron-win').attr('hidden',true)
-                $('#wala-win').attr('hidden',true)
-                $('#draw-win').attr('hidden',true)
-            }
-            else if(result.bet_status == ''){
-                notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
-                ctr='<button class="btn btn-secondary addfight col-12 fs-2 mb-2  " id="'+result.game_id+'" typ="NEW"  game="'+result.fightid+'" >CREATE NEW FIGHT?</button>'
-            }
-            
-            $('.notif').append(notif)
-            $('.controls').append(ctr)
-            
-            dmeron = $('.dmeron-val').val()
-            $('.dmeron_bet').text(result.dmeron)
-            $('.dmeron-val').val(result.dmeron)
-            
-            $('.dmeron_bet').each(function () {
-                $(this).prop('Counter',dmeron).animate({
-                    Counter: $(this).text()
-                }, {
-                    
-                    //chnage count up speed here
-                    duration: 1000,
-                    easing: 'swing',
-                    step: function (now) {
-                        $(this).text(Math.ceil(now).toLocaleString('en'));
-                        
-                    }
-                    
-                })
-            });
-            
-            dwala = $('.dwala-val').val()
-            $('.dwala_bet').text(result.dwala)
-            $('.dwala-val').val(result.dwala)
-            
-            $('.dwala_bet').each(function () {
-                $(this).prop('Counter',dwala).animate({
-                    Counter: $(this).text()
-                }, {
-                    
-                    //chnage count up speed here
-                    duration: 1000,
-                    easing: 'swing',
-                    step: function (now) {
-                        $(this).text(Math.ceil(now).toLocaleString('en'));
-                        
-                    }
-                    
-                })
-            });
-            
-            meron = $('.meron-val').val()
-            $('.meron_bet').text(result.meron)
-            $('.meron-val').val(result.meron)
-            
-            $('.meron_bet').each(function () {
-                $(this).prop('Counter',meron).animate({
-                    Counter: $(this).text()
-                }, {
-                    
-                    //chnage count up speed here
-                    duration: 1000,
-                    easing: 'swing',
-                    step: function (now) {
-                        $(this).text(Math.ceil(now).toLocaleString('en'));
-                        
-                    }
-                    
-                })
-            });
-            
-            wala = $('.wala-val').val()
-            $('.wala_bet').text(result.wala)
-            $('.wala-val').val(result.wala)
-            
-            $('.wala_bet').each(function () {
-                $(this).prop('Counter',wala).animate({
-                    Counter: $(this).text()
-                }, {
-                    
-                    //chnage count up speed here
-                    duration: 1000,
-                    easing: 'swing',
-                    step: function (now) {
-                        $(this).text(Math.ceil(now).toLocaleString('en'));
-                        
-                    }
-                    
-                })
-            });
-            
-            draw = $('.draw-val').val()
-            $('.draw_bet').text(result.draw)
-            $('.draw-val').val(result.draw)
-            
-            $('.draw_bet').each(function () {
-                $(this).prop('Counter',draw).animate({
-                    Counter: $(this).text()
-                }, {
-                    
-                    //chnage count up speed here
-                    duration: 1000,
-                    easing: 'swing',
-                    step: function (now) {
-                        $(this).text(Math.ceil(now).toLocaleString('en'));
-                        
-                    }
-                    
-                })
-            });
-            
-            long = $('.long-val').val()
-            $('.long_bet').text(result.longest)
-            $('.long-val').val(result.longest)
-            
-            $('.long_bet').each(function () {
-                $(this).prop('Counter',long).animate({
-                    Counter: $(this).text()
-                }, {
-                    
-                    //chnage count up speed here
-                    duration: 1000,
-                    easing: 'swing',
-                    step: function (now) {
-                        $(this).text(Math.ceil(now).toLocaleString('en'));
-                        
-                    }
-                    
-                })
-            });
-            
-            $('.meronpayout').text(result.meronpayout.toFixed(2))
-            $('.walapayout').text(result.walapayout.toFixed(2))
-            
-            // $('.draw_bet').text(result.draw.toFixed(2))
-            // $('.long_bet').text(result.long.toFixed(2))
-            
-            // END MESSAGE
-        }
         
-        // ////////////////
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        //////////// WEBSOCKET
+        // const ongame=JSON.parse(document.getElementById('arena_game').textContent)
+        // var socket= new WebSocket('ws://'+window.location.host+'/ws/arena/'+ongame);
+        // socket.onmessage =function(e){    
+        //     result=JSON.parse(e.data)
+            // $('.notif').html('')
+            // $('.controls').html('')
+            
+            // if(result.winner == 'MERON'){
+            //     $('.meron_box').addClass('meron-win')
+            //     $('.wala_box').removeClass('wala-win')
+            //     $('.draw_box').removeClass('draw-win')
+            //     $('#meron-win').attr('hidden',false)
+            //     $('#wala-win').attr('hidden',true)
+            //     $('#draw-win').attr('hidden',true)
+            // }else if(result.winner == 'WALA'){
+            //     $('.meron_box').removeClass('meron-win')
+            //     $('.draw_box').removeClass('draw-win')
+            //     $('.wala_box').addClass('wala-win')
+            //     $('#meron-win').attr('hidden',true)
+            //     $('#wala-win').attr('hidden',false)
+            //     $('#draw-win').attr('hidden',true)
+            // }else if(result.winner == 'DRAW'){
+            //     $('.draw_box').addClass('draw-win')
+            //     $('.meron_box').removeClass('meron-win')
+            //     $('.wala_box').removeClass('wala-win')
+            //     $('#meron-win').attr('hidden',true)
+            //     $('#wala-win').attr('hidden',true)
+            //     $('#draw-win').attr('hidden',false)
+            // }else if(result.winner == ''){
+            //     $('.meron_box').removeClass('meron-win')
+            //     $('.wala_box').removeClass('wala-win')
+            //     $('.draw_box').removeClass('draw-win')
+            //     $('#meron-win').attr('hidden',true)
+            //     $('#wala-win').attr('hidden',true)
+            //     $('#draw-win').attr('hidden',true)
+            // }
+            
+            
+            // notif=''
+            // if(result.bet_status == 'OPEN'){
+            //     ctr='<button class="btn btn-warning callbtn col-12 fs-2 mb-2 " typ="LAST CALL" game="'+result.fightid+'">LAST CALL BET</button>'
+            //     notif='<span class="badge bg-success fw-bolder fs-4 closenotif" >OPEN</span>'
+            // }else if(result.bet_status == 'LAST CALL'){
+            //     ctr='<button class="btn btn-danger callbtn col-12 fs-2 mb-2 " typ="CLOSING" game="'+result.fightid+'">CLOSE BET</button>'
+            //     notif='<span class="badge bg-warning text-danger fw-bolder fs-4  blink callnotif" >LAST CALL</span>'
+            
+            // }else if(result.bet_status == 'CLOSING'){
+            //     ctr='<div class="row"> <div class="col-6 mt-2">\
+            //  <button class="btn btn-danger fs-2 w-100 betwin" game="'+result.fightid+'"  id="MERON" gameid="'+result.game_id+'">MERON WIN?</button></div>\
+            //  <div class="col-6 mt-2">\
+            //    <button class="btn btn-primary fs-2 w-100 betwin" game="'+result.fightid+'" id="WALA" gameid="'+result.game_id+'">WALA WIN?</button>\
+            //    </div><div class="col-6 mt-2">\
+            //     <button class="btn btn-success fs-2 w-100 betwin" game="'+result.fightid+'" id="DRAW" gameid="'+result.game_id+'">DRAW WIN?</button>\
+            //   </div><div class="col-6 mt-2">\
+            //    <button class="btn btn-secondary fs-2 w-100 betwin"  game="'+result.fightid+'" id="CANCELLED" gameid="'+result.game_id+'">CANCEL FIGHT?</button>\
+            //         </div></div>\
+            //     <br>\
+            //    <button class="btn btn-warning fs-2 w-100 longbetwin"  game="'+result.fightid+'" id="LONGEST" gameid="'+result.game_id+'">LONGEST FIGHT?</button>'
+            //     notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+            
+            // }else if(result.bet_status == 'DECLARED'){
+            //     notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+            //     ctr='<div class="row"><div class="col-12 mt-2">\
+            //   <button class="btn btn-secondary fs-2 w-100 revert_btn"  game="'+result.fightid+'" >REVERT?</button>\
+            //    </div> <div class="col-12 mt-2">\
+            //     <button class="btn btn-danger fs-2 w-100 disburse_btn"  game="'+result.fightid+'"  >DISBURSE </button>\
+            //    </div></div>\
+            //    <br>\
+            //    <button class="btn btn-warning fs-2 w-100 longbetwin"  game="'+result.fightid+'" id="LONGEST" gameid="'+result.game_id+'">LONGEST FIGHT?</button>'
+            
+            // }else if(result.bet_status == 'CLOSED'){
+            //     notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+            //     ctr='<button class="btn btn-success callbtn col-12 fs-2 mb-2 " typ="OPEN" game="'+result.fightid+'">OPEN BET</button>'
+            // }else if(result.bet_status == 'DONE'){
+            //     notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+            //     ctr='<button class="btn btn-success nxtfight col-12 fs-2 mb-2  " id="'+result.game_id+'" typ="NEW"  game="'+result.fightid+'" > NEW FIGHT?</button>'
+            //     $('.meron_box').removeClass('meron-win')
+            //     $('.wala_box').removeClass('wala-win')
+            //     $('.draw_box').removeClass('draw-win')
+            //     $('#meron-win').attr('hidden',true)
+            //     $('#wala-win').attr('hidden',true)
+            //     $('#draw-win').attr('hidden',true)
+            // }
+            // else if(result.bet_status == ''){
+            //     notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+            //     ctr='<button class="btn btn-secondary addfight col-12 fs-2 mb-2  " id="'+result.game_id+'" typ="NEW"  game="'+result.fightid+'" >CREATE NEW FIGHT?</button>'
+            // }
+            
+            // $('.notif').append(notif)
+            // $('.controls').append(ctr)
+            
+            // dmeron = $('.dmeron-val').val()
+            // $('.dmeron_bet').text(result.dmeron)
+            // $('.dmeron-val').val(result.dmeron)
+            // $('.dmeron_bet').each(function () {
+            //     $(this).prop('Counter',dmeron).animate({
+            //         Counter: $(this).text()
+            //     }, {
+            //         duration: 1000,
+            //         easing: 'swing',
+            //         step: function (now) {
+            //             $(this).text(Math.ceil(now).toLocaleString('en'));
+            //         }
+            //     })
+            // });
+            
+            // dwala = $('.dwala-val').val()
+            // $('.dwala_bet').text(result.dwala)
+            // $('.dwala-val').val(result.dwala)
+            // $('.dwala_bet').each(function () {
+            //     $(this).prop('Counter',dwala).animate({
+            //         Counter: $(this).text()
+            //     }, {
+            //         duration: 1000,
+            //         easing: 'swing',
+            //         step: function (now) {
+            //             $(this).text(Math.ceil(now).toLocaleString('en'));
+            //         }
+            //     })
+            // });
+            
+            // meron = $('.meron-val').val()
+            // $('.meron_bet').text(result.meron)
+            // $('.meron-val').val(result.meron)
+            // $('.meron_bet').each(function () {
+            //     $(this).prop('Counter',meron).animate({
+            //         Counter: $(this).text()
+            //     }, {
+            //         duration: 1000,
+            //         easing: 'swing',
+            //         step: function (now) {
+            //             $(this).text(Math.ceil(now).toLocaleString('en'));
+            //         }
+            //     })
+            // });
+            
+            // wala = $('.wala-val').val()
+            // $('.wala_bet').text(result.wala)
+            // $('.wala-val').val(result.wala)
+            // $('.wala_bet').each(function () {
+            //     $(this).prop('Counter',wala).animate({
+            //         Counter: $(this).text()
+            //     }, {
+            //         duration: 1000,
+            //         easing: 'swing',
+            //         step: function (now) {
+            //             $(this).text(Math.ceil(now).toLocaleString('en'));
+            //         }
+            //     })
+            // });
+            
+            // draw = $('.draw-val').val()
+            // $('.draw_bet').text(result.draw)
+            // $('.draw-val').val(result.draw)
+            // $('.draw_bet').each(function () {
+            //     $(this).prop('Counter',draw).animate({
+            //         Counter: $(this).text()
+            //     }, {
+            //         duration: 1000,
+            //         easing: 'swing',
+            //         step: function (now) {
+            //             $(this).text(Math.ceil(now).toLocaleString('en'));
+            //         }
+            //     })
+            // });
+            
+            // long = $('.long-val').val()
+            // $('.long_bet').text(result.longest)
+            // $('.long-val').val(result.longest)
+            // $('.long_bet').each(function () {
+            //     $(this).prop('Counter',long).animate({
+            //         Counter: $(this).text()
+            //     }, {
+            //         duration: 1000,
+            //         easing: 'swing',
+            //         step: function (now) {
+            //             $(this).text(Math.ceil(now).toLocaleString('en'));
+            //         }
+            //     })
+            // });
+            
+            // $('.meronpayout').text(result.meronpayout.toFixed(2))
+            // $('.walapayout').text(result.walapayout.toFixed(2))
+        // }
     })
+    
+    
+    
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    function fetchDeclaData() {
+        const gameId = document.getElementById('gid').value;
+        if (gameId) {
+            $.ajax({
+                url: `/decladata/${gameId}/`, 
+                type: 'GET',
+                success: function(data) {
+                    $('.notif').html('')
+                    $('.controls').html('')
+                    
+                    if(data.winner == 'MERON'){
+                        $('.meron_box').addClass('meron-win')
+                        $('.wala_box').removeClass('wala-win')
+                        $('.draw_box').removeClass('draw-win')
+                        $('#meron-win').attr('hidden',false)
+                        $('#wala-win').attr('hidden',true)
+                        $('#draw-win').attr('hidden',true)
+                    }else if(data.winner == 'WALA'){
+                        $('.meron_box').removeClass('meron-win')
+                        $('.draw_box').removeClass('draw-win')
+                        $('.wala_box').addClass('wala-win')
+                        $('#meron-win').attr('hidden',true)
+                        $('#wala-win').attr('hidden',false)
+                        $('#draw-win').attr('hidden',true)
+                    }else if(data.winner == 'DRAW'){
+                        $('.draw_box').addClass('draw-win')
+                        $('.meron_box').removeClass('meron-win')
+                        $('.wala_box').removeClass('wala-win')
+                        $('#meron-win').attr('hidden',true)
+                        $('#wala-win').attr('hidden',true)
+                        $('#draw-win').attr('hidden',false)
+                    }else if(data.winner == ''){
+                        $('.meron_box').removeClass('meron-win')
+                        $('.wala_box').removeClass('wala-win')
+                        $('.draw_box').removeClass('draw-win')
+                        $('#meron-win').attr('hidden',true)
+                        $('#wala-win').attr('hidden',true)
+                        $('#draw-win').attr('hidden',true)
+                    }
+                    
+                    
+                    notif=''
+                    if(data.bet_status == 'OPEN'){
+                        ctr='<button class="btn btn-warning callbtn col-12 fs-2 mb-2 " typ="LAST CALL" game="'+data.fightid+'">LAST CALL BET</button>'
+                        notif='<span class="badge bg-success fw-bolder fs-4 closenotif" >OPEN</span>'
+                    }else if(data.bet_status == 'LAST CALL'){
+                        ctr='<button class="btn btn-danger callbtn col-12 fs-2 mb-2 " typ="CLOSING" game="'+data.fightid+'">CLOSE BET</button>'
+                        notif='<span class="badge bg-warning text-danger fw-bolder fs-4  blink callnotif" >LAST CALL</span>'
+                        
+                    }else if(data.bet_status == 'CLOSING'){
+                        ctr='<div class="row"> <div class="col-6 mt-2">\
+                    <button class="btn btn-danger fs-2 w-100 betwin" game="'+data.fightid+'"  id="MERON" gameid="'+data.game_id+'">MERON WIN?</button></div>\
+                    <div class="col-6 mt-2">\
+                    <button class="btn btn-primary fs-2 w-100 betwin" game="'+data.fightid+'" id="WALA" gameid="'+data.game_id+'">WALA WIN?</button>\
+                    </div><div class="col-6 mt-2">\
+                        <button class="btn btn-success fs-2 w-100 betwin" game="'+data.fightid+'" id="DRAW" gameid="'+data.game_id+'">DRAW WIN?</button>\
+                    </div><div class="col-6 mt-2">\
+                    <button class="btn btn-secondary fs-2 w-100 betwin"  game="'+data.fightid+'" id="CANCELLED" gameid="'+data.game_id+'">CANCEL FIGHT?</button>\
+                            </div></div>\
+                        <br>\
+                    <button class="btn btn-warning fs-2 w-100 longbetwin"  game="'+data.fightid+'" id="LONGEST" gameid="'+data.game_id+'">LONGEST FIGHT?</button>'
+                        notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+                        
+                    }else if(data.bet_status == 'DECLARED'){
+                        notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+                        ctr='<div class="row"><div class="col-12 mt-2">\
+                    <button class="btn btn-secondary fs-2 w-100 revert_btn"  game="'+data.fightid+'" >REVERT?</button>\
+                    </div> <div class="col-12 mt-2">\
+                        <button class="btn btn-danger fs-2 w-100 disburse_btn"  game="'+data.fightid+'"  >DISBURSE </button>\
+                    </div></div>\
+                    <br>\
+                    <button class="btn btn-warning fs-2 w-100 longbetwin"  game="'+data.fightid+'" id="LONGEST" gameid="'+data.game_id+'">LONGEST FIGHT?</button>'
+                        
+                    }else if(data.bet_status == 'CLOSED'){
+                        notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+                        ctr='<button class="btn btn-success callbtn col-12 fs-2 mb-2 " typ="OPEN" game="'+data.fightid+'">OPEN BET</button>'
+                    }else if(data.bet_status == 'DONE'){
+                        notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+                        ctr='<button class="btn btn-success nxtfight col-12 fs-2 mb-2  " id="'+data.game_id+'" typ="NEW"  game="'+data.fightid+'" > NEW FIGHT?</button>'
+                        $('.meron_box').removeClass('meron-win')
+                        $('.wala_box').removeClass('wala-win')
+                        $('.draw_box').removeClass('draw-win')
+                        $('#meron-win').attr('hidden',true)
+                        $('#wala-win').attr('hidden',true)
+                        $('#draw-win').attr('hidden',true)
+                    }
+                    else if(data.bet_status == ''){
+                        notif=' <span class="badge bg-danger fw-bolder fs-4    closenotif" >CLOSED</span>'
+                        ctr='<button class="btn btn-secondary addfight col-12 fs-2 mb-2  " id="'+data.game_id+'" typ="NEW"  game="'+data.fightid+'" >CREATE NEW FIGHT?</button>'
+                    }
+                    
+                    $('.notif').append(notif)
+                    $('.controls').append(ctr)
+                    
+                    dmeron = $('.dmeron-val').val()
+                    $('.dmeron_bet').text(data.dmeron)
+                    $('.dmeron-val').val(data.dmeron)
+                    $('.dmeron_bet').each(function () {
+                        $(this).prop('Counter',dmeron).animate({
+                            Counter: $(this).text()
+                        }, {
+                            duration: 1000,
+                            easing: 'swing',
+                            step: function (now) {
+                                $(this).text(Math.ceil(now).toLocaleString('en'));
+                            }
+                        })
+                    });
+                    
+                    dwala = $('.dwala-val').val()
+                    $('.dwala_bet').text(data.dwala)
+                    $('.dwala-val').val(data.dwala)
+                    $('.dwala_bet').each(function () {
+                        $(this).prop('Counter',dwala).animate({
+                            Counter: $(this).text()
+                        }, {
+                            duration: 1000,
+                            easing: 'swing',
+                            step: function (now) {
+                                $(this).text(Math.ceil(now).toLocaleString('en'));
+                            }
+                        })
+                    });
+                    
+                    meron = $('.meron-val').val()
+                    $('.meron_bet').text(data.meron)
+                    $('.meron-val').val(data.meron)
+                    $('.meron_bet').each(function () {
+                        $(this).prop('Counter',meron).animate({
+                            Counter: $(this).text()
+                        }, {
+                            duration: 1000,
+                            easing: 'swing',
+                            step: function (now) {
+                                $(this).text(Math.ceil(now).toLocaleString('en'));
+                            }
+                        })
+                    });
+                    
+                    wala = $('.wala-val').val()
+                    $('.wala_bet').text(data.wala)
+                    $('.wala-val').val(data.wala)
+                    $('.wala_bet').each(function () {
+                        $(this).prop('Counter',wala).animate({
+                            Counter: $(this).text()
+                        }, {
+                            duration: 1000,
+                            easing: 'swing',
+                            step: function (now) {
+                                $(this).text(Math.ceil(now).toLocaleString('en'));
+                            }
+                        })
+                    });
+                    
+                    draw = $('.draw-val').val()
+                    $('.draw_bet').text(data.draw)
+                    $('.draw-val').val(data.draw)
+                    $('.draw_bet').each(function () {
+                        $(this).prop('Counter',draw).animate({
+                            Counter: $(this).text()
+                        }, {
+                            duration: 1000,
+                            easing: 'swing',
+                            step: function (now) {
+                                $(this).text(Math.ceil(now).toLocaleString('en'));
+                            }
+                        })
+                    });
+                    
+                    long = $('.long-val').val()
+                    $('.long_bet').text(data.longest)
+                    $('.long-val').val(data.longest)
+                    $('.long_bet').each(function () {
+                        $(this).prop('Counter',long).animate({
+                            Counter: $(this).text()
+                        }, {
+                            duration: 1000,
+                            easing: 'swing',
+                            step: function (now) {
+                                $(this).text(Math.ceil(now).toLocaleString('en'));
+                            }
+                        })
+                    });
+                    
+                    $('.meronpayout').text(data.meronpayout.toFixed(2))
+                    $('.walapayout').text(data.walapayout.toFixed(2))
+                },
+                error: function(error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        } else {
+            console.error('Game ID not found!');
+        }
+    }
+    function refreshFunction() {
+        fetchDeclaData()
+    }
+    setInterval(refreshFunction, 2000);

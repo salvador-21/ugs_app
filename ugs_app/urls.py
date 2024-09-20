@@ -70,7 +70,7 @@ urlpatterns = [
     path('get-fight-data/', views.get_fight_data, name='get_fight_data'),
     path('fight_stat',views.fight_stat,name='fight_stat'),
     path('userwallet', views.userwallet, name='userwallet'),
-    path('cashoutPoints', views.cashoutPoints, name='cashoutPoints'),
+    path('cashoutwallet', views.cashoutwallet, name='cashoutwallet'),
     path('loadCashOutTbl', views.loadCashOutTbl, name='loadCashOutTbl'),
     
     path('setwinner',views.setwinner,name='setwinner'),
@@ -78,7 +78,16 @@ urlpatterns = [
     path('adstaking',views.adstaking,name='adstaking'),
     path('loadStaking',views.loadStaking,name='loadStaking'),
     path('load_stake_tbl', views.load_stake_tbl, name='load_stake_tbl'),
-    path('appstaking', views.appstaking, name='appstaking'),
-    
+    path('cashoutapproval', views.cashoutapproval, name='cashoutapproval'),
+    path('coutapproval', views.coutapproval, name='coutapproval'),
+    path('loadagentcOut', views.loadagentcOut, name='loadagentcOut'),
+
+
+
+
+
+    path('betdata/<str:game_id>/', views.betdata, name='betdata'),
+    path('decladata/<str:game_room>/', views.decladata, name='decladata'),
+    # path('appstaking', views.appstaking, name='appstaking'),
     # ------mmmmmmmmm-------------- 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

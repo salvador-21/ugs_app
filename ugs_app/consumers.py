@@ -192,17 +192,14 @@ def main(user,game_room):
               'winner':winner,
               'dmeron':str(dmeron),
               'dwala':str(dwala),
-
               'meron':meron,
               'wala':wala,
               'draw':draw,
               'longest':longest,
-             
               'myMeronBet':mymeronbet,
               'myWalaBet':mywalabet,
               'mydrawbet':mydrawbet,
               'mylongbet':mylongbet,
-
               'totmw':totmw,
               'totpla':totpla,
               'lesspla':lesspla,
@@ -214,7 +211,6 @@ def main(user,game_room):
               'walaodss':walaodds,
               'merontowin':merontowin,
               'walatowin':walatowin,
-              
               'mywallet':int(wbalance)
 
         }
